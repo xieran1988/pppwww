@@ -16,7 +16,7 @@ function user_password_form(){
 				echo "</tr><tr>";
 				echo "<td>新口令:</td><td><input name=\"new_pass2\" type=\"password\" /></td>";
 				echo "</tr><tr>";
-				echo "<td>操作:</td><td><input id=\"input_sub\" type=\"submit\" value=\"提交\" /></td>";
+				echo "<td>操作:</td><td><button id=\"input_sub\" type=\"submit\">提交</button></td>";
 				echo "</tr>";
 				echo "</table>";
 				echo "<input name=\"opt\" type=\"hidden\" value=\"7\" />";
@@ -75,7 +75,7 @@ if ($_GET['t'] == 'manstaff') {
 if(!$_GET["id"]){
 				echo "<a href='system.php?id=4'>修改我的密码</a><hr/><a href='system.php?id=1'>员工</a>.<a href='system.php?id=2'>资费</a>.<a href='system.php?id=3'>带宽</a>";
 }else{
-				echo "<a href=system.php>返回</a><hr/>";
+				echo "<a href=system.php><button>返回</button></a>";
 }
 if($_GET["id"] && $_GET["id"] == "4") {
 				user_password_form();
@@ -255,7 +255,7 @@ if($_GET["id"] && $_GET["opt"] && $_GET["opt"] == "14"){
 
 //显示列表
 if($_GET["id"] && (!$_GET["opt"] || $_GET["opt"] =="4" || $_GET["opt"] =="14" || $_GET["opt"] =="11") ){
-				echo "<a href='?$optt&id=".$_GET["id"]."&opt=1'>添加</a>";
+				echo "<a href='?$optt&id=".$_GET["id"]."&opt=1'><button class=btn-primary>添加</button></a>";
 				//列表
 
 				$sql_select;
@@ -278,7 +278,8 @@ if($_GET["id"] && (!$_GET["opt"] || $_GET["opt"] =="4" || $_GET["opt"] =="14" ||
 												echo "<td>".$row["addr"]."</td>";
 												echo "<td>".$row["note"]."</td>";
 												echo "<td>";
-												echo "<a href=?$optt&id=1&item=".$row["Id"]."&opt=10>M</a>||<a href=?$optt&id=1&item=".$row["Id"]."&opt=11>D</a>";
+												$url = "?id=1&item=".$row["Id"]."&opt=";
+												btn_edit_del($url."10", $url."11");
 												echo "</td>";
 												echo "</tr>";
 								}
@@ -297,7 +298,8 @@ if($_GET["id"] && (!$_GET["opt"] || $_GET["opt"] =="4" || $_GET["opt"] =="14" ||
 												echo "<td>RMB".$row["installation_fee"]."元</td>";
 												echo "<td>".$row["note"]."</td>";
 												echo "<td>";
-												echo "<a href=?$optt&id=2&item=".$row["Id"]."&opt=10>M</a>||<a href=?$optt&id=2&item=".$row["Id"]."&opt=11>D</a>";
+												$url = "?id=2&item=".$row["Id"]."&opt=";
+												btn_edit_del($url."10", $url."11");
 												echo "</td>";
 												echo "</tr>";
 								}
@@ -316,7 +318,8 @@ if($_GET["id"] && (!$_GET["opt"] || $_GET["opt"] =="4" || $_GET["opt"] =="14" ||
 												echo "<td>".$row["lan_speed_rx"]."kbps</td>";
 												echo "<td>".$row["note"]."</td>";
 												echo "<td>";
-												echo "<a href=?$optt&id=3&item=".$row["Id"]."&opt=10>M</a>||<a href=?$optt&id=3&item=".$row["Id"]."&opt=11>D</a>";
+												$url = "?id=3&item=".$row["Id"]."&opt=";
+												btn_edit_del($url."10", $url."11");
 												echo "</td>";
 												echo "</tr>";
 								}
