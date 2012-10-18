@@ -1,4 +1,5 @@
 <?php header("content-type:text/html; charset=utf-8"); 
+
 require_once("sql.php");
 function login_out(){
 	setcookie("php_user", "", time()-1800);
@@ -62,10 +63,9 @@ if($_REQUEST["name"] && $_REQUEST["password"]){
 <HEAD>
  <TITLE>Login</TITLE>
  <link href="css/bootstrap.css" rel="stylesheet">
-
- 
  <script src="js/bootstrap.js"></script>
- 
+ <script src="jquery.js"></script>
+ <script src="postfix.js"></script>
  
 </HEAD>
 <BODY>
