@@ -15,7 +15,7 @@ if ($_GET['t'] != 'manorg')
 
 function org_rows($obj, $id, $name){
 				if(!$obj[$name] || $obj[$name] == "") $obj[$name] = "NULL";
-				echo "<div ><a href=\"?node=".$obj[$id]."\">".$obj[$name]."</a> | </div>";
+				echo "<div ><a href=\"?node=".$obj[$id]."\">"."<button>".$obj[$name]. "</button>"."</a> | </div>";
 }
 function get_title($id_node){
 				$sql_txt = "select * from org where Id = ".$id_node;
@@ -25,10 +25,10 @@ function get_title($id_node){
 								if(!$sql_row["name"] || $sql_row["name"] == "") $sql_row["name"] = "NULL";
 								echo $sql_row["note"]."<hr/>";
 								echo "[<a href=\"?node=".$sql_row["Id"]."\">".$sql_row["name"]."</a>]";
-								echo ".<a href=\"?node=".$sql_row["father_node"]."\">上一级</a> ";
-								echo ".<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=1\">删除本级</a> ";
-								echo ".<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=4\">修改本级</a> ";
-								echo ".<a href=\"?\">返回</a> .";
+								echo ".<a href=\"?node=".$sql_row["father_node"]."\"><button>上一级</button></a> ";
+								echo ".<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=1\"><button>删除本级</button></a> ";
+								echo ".<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=4\"><button>修改本级</button></a> ";
+								echo ".<a href=\"?\"><button>返回</button></a> .";
 								break;
 								//org_rows($row, "Id", "name", "20px");
 				}
@@ -54,7 +54,7 @@ if($opt){
 								get_title($cur_node);
 
 								?>
-												<div style="border:solid 1px #333333; float:left; margin:20px; padding:20px;">
+												<div>
 												<?php
 												$optv = 2;
 								$chang_name;
@@ -150,7 +150,7 @@ if($opt){
 }
 if(!$opt || ($opt != "3" && $opt != "1" && $opt != "4")){
 				get_title($cur_node);
-				echo "<a href=\"org.php?node=".$cur_node."&opt=3\">添加子级</a>";
+				echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button>添加子级</button></a>";
 
 				$sql_cmd = "select * from org where father_node = ".$cur_node;
 				$sql_result = yjwt_mysql_select($sql_cmd);

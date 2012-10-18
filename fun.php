@@ -40,8 +40,6 @@ function staff_name($v){
 	if($v=="3") return "管理员";
 }
 function login_check(){
-	return 1;
-	
 	if($_COOKIE["Id_user"]==NULL){
 	    echo "<script type=\"text/javascript\">";
 		echo "alert('你还没有登陆');";
