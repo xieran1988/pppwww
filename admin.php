@@ -65,6 +65,7 @@
 					<?php require_once("business_list.php") ?>
 					<?php require_once("system.php") ?>
 					<?php require_once("org.php") ?>
+					<?php require_once("user_info.php") ?>
         </div><!--/span-->
       </div><!--/row-->
 

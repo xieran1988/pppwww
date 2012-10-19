@@ -1,14 +1,9 @@
 <?php
-header("content-type:text/html; charset=gb2312");
-header("service; yjwt");
 require_once("sql.php"); 
 require_once("fun.php");
 ?>
-<html>
-<head>
 <?php
 function user_info(){
-	
 }
 function fix_ip($fix){
 	if($fix) return $fix;
@@ -23,13 +18,13 @@ function fix_uptime($fix){
 	else return "从未上线";
 }
 function from_search(){
-	echo "<form class=\"form-horizontal\" method=\"post\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
+	echo "<form class=\"\" method=\"post\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
 	echo "关键字:<input name=\"key\" type=\"text\" />";
 	echo " 在线<input type=\"checkbox\" name=\"online\" value=\"1\">";
 	echo " 到期<input type=\"checkbox\" name=\"disable_time\" value=\"1\">";	
 	echo " <input id=\"input_sub\" type=\"submit\" value=\"提交\" />";
 	echo "<input name=\"opt\" type=\"hidden\" value=\"1\" />";
-	echo "<form>";
+	echo "</form>";
 }
 function table_user(){
     $startCount = 0;
@@ -125,8 +120,6 @@ function table_user(){
 		$dataset = yjwt_mysql_select($sql_select);
 		if($dataset && $row = mysql_fetch_array($dataset)){
 			echo "<header class=\"jumbotron subhead\" id=\"overview\">";
-
-		
 			
 			echo "<p>交易信息</p>";
 			echo "<table class=\"table table-condensed\">";
@@ -159,16 +152,9 @@ function table_user(){
 	}
 }
 
-?>
-<link href="css/bootstrap.css" rel="stylesheet"> 
-<script src="js/bootstrap.js"></script>
-</head>
-<body>
-<?php
-
+if ($_GET['t'] != 'findusr')
+	return ;
 from_search();
 table_user();
 
 ?>
-</body>
-</html>

@@ -34,6 +34,21 @@ function dro_list_staff($v){
 	if($v=="3") echo "<option value=\"3\" selected=\"selected\">管理员</option>";
 	else echo "<option value=\"3\" >管理员</option>";
 }
+
+function dro_list_opt_type($v){
+	if($v=="1") echo "<option value=\"-1\" selected=\"selected\">所有</option>";
+	else echo "<option value=\"-1\" >所有</option>";
+	
+	if($v=="1") echo "<option value=\"1\" selected=\"selected\">开户</option>";
+	else echo "<option value=\"1\" >开户</option>";
+	
+	if($v=="2") echo "<option value=\"2\" selected=\"selected\">续费</option>";
+	else echo "<option value=\"2\" >续费</option>";
+	
+	if($v=="3") echo "<option value=\"3\" selected=\"selected\">变更</option>";
+	else echo "<option value=\"3\" >变更</option>";
+}
+
 function staff_name($v){
 	if($v=="1") return "职员";
 	if($v=="2") return "经理";
@@ -67,6 +82,7 @@ function opt_type($opt_v){
 	if($opt_v == 3) return "变更";
 	return "非法";
 }
+
 function user_online($opt_v){
 	if($opt_v == 0) return "不在线";
 	if($opt_v == 1) return "在线";
@@ -96,5 +112,6 @@ function btn_edit_del($edit, $del) {
 	echo "<a href='$edit'><button class='btn-mini btn-primary'>编辑</button></a>";
 	echo "<a href='$del'><button class='btn-mini btn-danger'>删除</button></a>";
 }
+
 
 ?>
