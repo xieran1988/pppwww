@@ -1,5 +1,20 @@
 <?php
 
+if ($_GET['t'] == 'exit') {
+	?><script> 
+		alert('请重新登陆！'); 
+		window.location.href = '?t=login';
+	</script> <?
+}
+
+if ($_GET['t'] == '') {
+	?><script> 
+		window.location.href = '?t=getid';
+	</script> <?
+}
+
+login_check();
+
 function dro_list($sql_select, $default_vaule, $text_name, $vaule_name){
 	$dataset = yjwt_mysql_select($sql_select);
 	
@@ -54,16 +69,16 @@ function staff_name($v){
 	if($v=="2") return "经理";
 	if($v=="3") return "管理员";
 }
+
 function login_check(){
-	if($_COOKIE["Id_user"]==NULL){
+	if($_COOKIE["Id_user"]==NULL && $_GET['t'] != 'login'){
 	    echo "<script type=\"text/javascript\">";
 		echo "alert('你还没有登陆');";
-		echo "location.href ='login.php';";
+		echo "location.href ='?t=login';";
 		echo "</script>";
 		return 0;
 	}
 	return 1;
-	
 }
 
 function rule_check($ru){
@@ -112,6 +127,5 @@ function btn_edit_del($edit, $del) {
 	echo "<a href='$edit'><button class='btn-mini btn-primary'>编辑</button></a>";
 	echo "<a href='$del'><button class='btn-mini btn-danger'>删除</button></a>";
 }
-
 
 ?>

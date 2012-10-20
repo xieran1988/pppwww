@@ -59,9 +59,9 @@ function table_user(){
 		echo "<td><b>帐户</b></td>";
 		echo "<td><b>在线</b></td>";
 		echo "<td><b>姓名</b></td>";
-		echo "<td><b>地址</b></td>";
-		echo "<td><b>电话</b></td>";
-		echo "<td><b>证件号</b></td>";
+		#echo "<td><b>地址</b></td>";
+		#echo "<td><b>电话</b></td>";
+		#echo "<td><b>证件号</b></td>";
 		echo "<td><b>MAC</b></td>";
 		echo "<td><b>服务器名称</b></td>";
 		echo "<td><b>IP</b></td>";
@@ -77,9 +77,9 @@ function table_user(){
 		//user_online
 		echo "<td>".user_online($row["online"])."</td>";
 		echo "<td>".$row["name"]."</td>";
-		echo "<td>".$row["addr"]."</td>";
-		echo "<td>".$row["phone"]."</td>";
-		echo "<td>".$row["idcar"]."</td>";
+		#echo "<td>".$row["addr"]."</td>";
+		#echo "<td>".$row["phone"]."</td>";
+		#echo "<td>".$row["idcar"]."</td>";
 		echo "<td>".$row["mac"]."</td>";
 		echo "<td>".$row["service_name"]."</td>";
 		echo "<td>".$row["last_ip"]."</td>";
@@ -91,8 +91,8 @@ function table_user(){
 	}
 	if($num==0) echo "<tr><td>未找到数据</td></tr>";
 	echo "</table>";
-	if($_REQUEST["page"]) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?page=".($_REQUEST["page"]-1)."'>上一下</a> | ";
-	if($num == $perNumber) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?page=".($_REQUEST["page"]+1)."'>下一下</a>";
+	if($_REQUEST["page"]) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?page=".($_REQUEST["page"]-1)."'>上一页</a> | ";
+	if($num == $perNumber) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?page=".($_REQUEST["page"]+1)."'>下一页</a>";
 	if($_GET["uid"]){
 		echo "<p>详细信息<p>";
 		echo "<table class=\"table table-condensed\">";

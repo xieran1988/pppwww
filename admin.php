@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+<?php require_once("fun.php") ?>
+
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -34,11 +37,39 @@
           <a class="brand" href="#">小区宽带 OA 系统</a>
           <div class="nav-collapse collapse">
           </div><!--/.nav-collapse -->
+     
+						<ul class="nav pull-right">
+						<? if ($_GET[t] != 'login') { ?>
+							<li><a href=?t=exit>退出登陆</a></li>
+						<? } ?>
+						</ul>
         </div>
       </div>
     </div>
+		
+		<div class="container-fluid">
 
-    <div class="container-fluid">
+		<? if ($_GET['t'] == 'login') { ?>
+
+			<form class=well method=post action="login.php"
+					style="width: 300px; position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1" >
+				<div class="control-group">
+					<label class="control-label" >用户名</label>
+					<div class="controls">
+						<input placeholder="请输入用户名..." name="name" type="text" value="<?= $_REQUEST["name"]?>" >
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" >密码</label>
+					<div class="controls">
+						<input placeholder="请输入密码..." name="password" type="password" value="<?= $_REQUEST["password"]?>" >
+					</div>
+				</div>
+				<button type=submit class="btn btn-primary">登录</a>
+			</form>
+
+		<? } else { ?>
+
       <div class="row-fluid">
         <div class="span3">
 					<div class="well sidebar-nav">
@@ -69,13 +100,15 @@
         </div><!--/span-->
       </div><!--/row-->
 
-      <hr>
-
-      <footer>
-        <p>&copy; 盈捷万通 2012</p>
-      </footer>
+			<hr>
+			<footer>
+				<p>&copy; 盈捷万通 2012</p>
+			</footer>
 
     </div><!--/.fluid-container-->
+
+		<? } ?>
+
 
     <!-- Le javascript
     ================================================== -->

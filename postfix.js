@@ -18,8 +18,8 @@ $(document).ready(function() {
 		}
 	}
 	//console.log('params:', params);
-	$('form').append('<input type=hidden name=t value=' + m.substr(2) + ' >');
-	$('form').attr('action', '?' + m);
+	$('#right-pan form').append('<input type=hidden name=t value=' + m.substr(2) + ' >');
+	$('#right-pan form').attr('action', '?' + m);
 	var a = $('#right-pan input[type="submit"]');
 	a.replaceWith('<button type=submit>提交</button>');
 	$('#right-pan button').addClass("btn");
