@@ -15,8 +15,8 @@
       echo "关键字:";
       echo "<input name=\"key\" type=\"text\" value=\"$str_key\"/> [项目、帐户、姓名、操作员...]";
 			echo "<br/>时间:";		
-      echo "<input name=\"s\" type=\"text\" value=\"$s_time\"/> -> ";
-      echo "<input name=\"e\" type=\"text\" value=\"$e_time\"/>";
+      echo "<input name=\"s\" class=datetime type=\"text\" value=\"$s_time\"/> -> ";
+      echo "<input name=\"e\" class=datetime type=\"text\" value=\"$e_time\"/>";
       echo "<br/>类型:";
       echo "<select name=\"type\">";
        dro_list_opt_type($opt_type);

@@ -42,4 +42,8 @@ $(document).ready(function() {
 		});
 	});
 	$('.nav-list a[href^="?' + m + '"]').parent().addClass('active');
+	$('.datetime').datepicker({
+		format: 'yyyy-mm-dd'
+	});
 });
+

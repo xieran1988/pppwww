@@ -21,6 +21,7 @@
       }
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/datepicker.css" rel="stylesheet">
 
   </head>
 
@@ -28,22 +29,14 @@
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
+		    <div class="container-fluid">
           <a class="brand" href="#">小区宽带 OA 系统</a>
-          <div class="nav-collapse collapse">
-          </div><!--/.nav-collapse -->
-     
 						<ul class="nav pull-right">
 						<? if ($_GET[t] != 'login') { ?>
 							<li><a href=?t=exit>退出登陆</a></li>
 						<? } ?>
 						</ul>
-        </div>
+				</div>
       </div>
     </div>
 		
@@ -98,6 +91,7 @@
 					<?php require_once("org.php") ?>
 					<?php require_once("user_info.php") ?>
         </div><!--/span-->
+
       </div><!--/row-->
 
 			<hr>
@@ -115,6 +109,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="jquery.js"></script>
     <script src="js/bootstrap.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
     <script src="postfix.js"></script>
 
   </body>
