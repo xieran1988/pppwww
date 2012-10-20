@@ -38,6 +38,11 @@ $(document).ready(function() {
 		var a = $(this).parent();
 		var href = a.attr('href');
 		$(this).click(function() {
+			if ($(this).hasClass('btn-del')) {
+				if (!confirm('确认删除？')) {
+					return;
+				}
+			} 
 			window.location.href = href;
 		});
 	});

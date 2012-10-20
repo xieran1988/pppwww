@@ -125,7 +125,11 @@ function form_field($desc, $input) {
 
 function btn_edit_del($edit, $del) {
 	echo "<a href='$edit'><button class='btn-mini btn-primary'>编辑</button></a>";
-	echo "<a href='$del'><button class='btn-mini btn-danger'>删除</button></a>";
+	echo "<a href='$del'><button class='btn-mini btn-danger btn-del'>删除</button></a>";
+}
+
+function jmp($url) {
+	?> <script> window.location.href = "<?= $url ?>" </script> <?
 }
 
 ?>

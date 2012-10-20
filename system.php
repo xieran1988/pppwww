@@ -211,6 +211,7 @@ if($_GET["id"] && $_GET["opt"] && $_GET["opt"] == "4"){
 								$insert_sql = $insert_sql."VALUES ('".$_GET["name"]."',".$_GET["up_speed"].",".$_GET["down_speed"].",".$_GET["lan_speed_tx"].",".$_GET["lan_speed_rx"].",'".$_GET["note"]."')";
 				}
 				yjwt_mysql_do($insert_sql);
+				jmp("?t=$_GET[t]");
 }
 /*删除*/
 if($_GET["id"] && $_GET["opt"] && $_GET["opt"] == "11"){
