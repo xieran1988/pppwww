@@ -59,7 +59,7 @@ function org_note_print($node_id, $script_opt){
 		$last_node = $row["Id"];
 		echo "<a href=" . $script_opt . $row["Id"]."&orgmap=".$_GET["orgmap"].".".$row["Id"].">";
 		echo "<button> ". $row["name"] . "</button>" ;
-		echo "</a>";
+		echo "</a> ";
 		//_SERVER["SCRIPT_NAME"]
 	}
 	if($last_node == $node_id) return $node_id;

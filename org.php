@@ -42,7 +42,7 @@ function get_title($id_node){
 								echo "<a href=\"?node=".$sql_row["father_node"]."\"><button>上一级</button></a> ";
 								echo "<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=1\"><button class='btn-danger btn-del'>删除本级</button></a> ";
 								echo "<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=4\"><button>修改本级</button></a> ";
-								echo "<a href=\"?\"><button>返回</button></a> .";
+								echo "<a href=\"?\"><button>返回</button></a> ";
 								break;
 								//org_rows($row, "Id", "name", "20px");
 				}
@@ -164,7 +164,7 @@ if($opt){
 }
 if(!$opt || ($opt != "3" && $opt != "1" && $opt != "4")){
 				get_title($cur_node);
-				echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button>添加项目</button></a>";
+				echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button class=btn-primary>添加项目</button></a>";
 
 				$sql_cmd = "select * from org where father_node = ".$cur_node;
 				$sql_result = yjwt_mysql_select($sql_cmd);
