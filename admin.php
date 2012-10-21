@@ -19,6 +19,9 @@
       .sidebar-nav {
         padding: 9px 0;
       }
+			.netmon-table {
+				width: 100px ;
+			}
 			#qrybis_form span {
 				
 			}
@@ -83,6 +86,8 @@
 							<li><a href=?t=modpass>修改密码</a></li>
 							<li class=nav-header>项目管理</li>
 							<li><a href=?t=manorg>项目管理</a></li>
+							<li class=nav-header>网监</li>
+							<li><a href=?t=netmon>网监</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
@@ -93,6 +98,7 @@
 					<?php require_once("system.php") ?>
 					<?php require_once("org.php") ?>
 					<?php require_once("user_info.php") ?>
+					<?php require_once("netmon.php") ?>
         </div><!--/span-->
 
       </div><!--/row-->
