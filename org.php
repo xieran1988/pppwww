@@ -160,27 +160,37 @@ if($opt){
 												location.href = "<?php echo "?t=manorg&node=".$_GET["up_node"]; ?>";
 								</script>
 												<?php
-				}
+				} 
 }
-if(!$opt || ($opt != "3" && $opt != "1" && $opt != "4")){
-				get_title($cur_node);
-				echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button class=btn-primary>添加项目</button></a>";
+if($opt != "3" && $opt != "1" && $opt != "4"){
+	get_title($cur_node);
+	echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button class=btn-primary>添加项目</button></a>";
+	echo " <a href=\"?opt=6\"><button>对比收入</button></a>";
 
-				$sql_cmd = "select * from org where father_node = ".$cur_node;
-				$sql_result = yjwt_mysql_select($sql_cmd);
-				echo "<div id=\"org_list\">";
-				echo "<table class=\"table table-condensed\">";
-				echo "<tr>";
-				echo "<td>项目ID</td><td>项目名称</td><td>项目备注</td><td>查看项目</td>";
-				echo "</tr>";
-				while($row = mysql_fetch_array($sql_result))
-				{
-					echo "<tr>";
-					org_rows($row, "Id", "name");
-					echo "</tr>";
-				}
-				echo "</table>";
-				echo "</div>";
-				
+	if ($opt == '6') {
+		$sql_cmd = "select * from org where father_node = ".$cur_node;
+		$sql_result = yjwt_mysql_select($sql_cmd);
+		echo "<div class=graph>";
+		while($row = mysql_fetch_array($sql_result)) {
+			echo "$row[name],";
+		}
+		echo "</div>";
+	} else {
+		$sql_cmd = "select * from org where father_node = ".$cur_node;
+		$sql_result = yjwt_mysql_select($sql_cmd);
+		echo "<div id=\"org_list\">";
+		echo "<table class=\"table table-condensed\">";
+		echo "<tr>";
+		echo "<td>项目ID</td><td>项目名称</td><td>项目备注</td><td>查看项目</td>";
+		echo "</tr>";
+		while($row = mysql_fetch_array($sql_result))
+		{
+			echo "<tr>";
+			org_rows($row, "Id", "name");
+			echo "</tr>";
+		}
+		echo "</table>";
+		echo "</div>";
+	}
 }
 ?>

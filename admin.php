@@ -22,6 +22,11 @@
 			.netmon-table {
 				width: 100px ;
 			}
+			.graph {
+				display:none;
+				width: 600px;
+				height: 400px;
+			}
 			#qrybis_form span {
 				
 			}
@@ -119,6 +124,8 @@
     <script src="jquery.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/jquery.flot.js"></script>
+    <script src="js/jquery.flot.time.js"></script>
     <script src="postfix.js"></script>
 
   </body>

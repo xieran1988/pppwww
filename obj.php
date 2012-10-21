@@ -158,6 +158,7 @@ function uid_find_form(){
 		echo "<input class=input name=\"s\" type=\"text\"/><br/>";
     echo "<label>操作：</label>";
     echo "<button id=\"input_sub\" type=\"submit\">提交</button>";
+	echo "<input name=\"t\" type=\"hidden\" value=\"".$_REQUEST["t"]."\" />";
     echo "<input name=\"opt\" type=\"hidden\" value=\"2\" />";
     echo "</form>";
 }
@@ -209,24 +210,24 @@ function uid_entry_form(){
 
 		$list_num = 0;
 		form_field_header("套餐");
-    echo "<select id=tc_select name=\"tc\">";
+        echo "<select id=tc_select name=\"tc\">";
 		$list_num = get_tc_list($row["orgmap"], $row["speed_id"]);
-	  echo "</select>";
+	    echo "</select>";
 		form_field_tail();
 
 		echo "<div id='opt_menu' style='display:none'>";
 			form_field("固定IP", "<input name=\"ip\" type=\"text\" value=\"".$row["ip_address"]."\" >");
 			form_field("密码", "<input name=\"password\" type=\"text\" value=\"".$row["password"]."\" >");
 			form_field_header("带宽");
-				echo "<select name=\"speed_id\">";
-				dro_list("select * from speed", $row["speed_id"], "name", "Id");
-				echo "</select>";
+			echo "<select name=\"speed_id\">";
+            dro_list("select * from speed", $row["speed_id"], "name", "Id");
+			echo "</select>";
 			form_field_tail();
-      form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\"/>".
+			
+        	form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\"/>".
 														 "月<input name=\"days\" class=input-mini type=\"text\" value=\"0\" >");
-      form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\"/>");;
-    echo "</div>";
-
+        	form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\"/>");;
+        echo "</div>";
         form_field("备注", "<input name=\"note\" type=\"text\" value=\"业务\" >");
         form_field("", "<button id=\"input_sub\" type=\"submit\" >提交</button>");
 
@@ -247,45 +248,75 @@ function uid_entry_form(){
 	}
 }
 function uid_entry(){
-    $uid = $_GET["uid"];
-    $sql_select="select * from speed where Id =".$_GET["speed_id"];
-    $dataset = yjwt_mysql_select($sql_select);
+	$set_opt;
+    $uid = $_REQUEST["uid"];
+    
     //admin
 	$admin = $_REQUEST["php_user"];
 	if($admin == NULL || $admin == "") $admin = "1";
-	//opt_type
-    $opt_type ="1";//1==开户，2=续费
-	$opt_type = $_GET["opt_type"];
+    //$opt_type ="1";//1==开户，2=续费, 3=变更
+	
+	$opt_type = $_REQUEST["opt_type"];
+	$opt_months = $_REQUEST["months"];
+	$opt_days = $_REQUEST["days"];
+	$money = $_REQUEST["money"];
+	$speed_id = $_REQUEST["speed_id"];
+	
+	if($money == NULL || $money == "") $money = "0";
+	if($opt_months == NULL || $opt_months=="") $opt_months = "0";
+	if($opt_days == NULL || $opt_days=="") $opt_days = "0";
+	if($_REQUEST["tc"] < 0) $opt_type = "3";
+	
+	if($_REQUEST["tc"] && $_REQUEST["tc"] >= 0){
+		$sql_select="select * from tariff where Id =".$_REQUEST["tc"];
+		$dataset = yjwt_mysql_select($sql_select);
+		if($row = mysql_fetch_array($dataset)){
+			$money = $row["money"];
+			$opt_months = $row["months"];
+			$opt_days = $row["days"];
+			$speed_id = $row["speed"];
+			if($opt_type == "1") $money += $row["installation_fee"];//开户费
+		}
+	}
+	else{
+		$set_opt = "password='".$_GET["password"]."'";
+		$sql_select="select * from speed where Id =".$_GET["speed_id"];
+		$dataset = yjwt_mysql_select($sql_select);
+		if($row = mysql_fetch_array($dataset)){
+			$set_opt = $set_opt.", `up_speed`=".$row["up_speed"];
+			$set_opt = $set_opt.", `down_speed`=".$row["down_speed"];
+			$set_opt = $set_opt.", `lan_speed`=".$row["lan_speed_rx"];
+			$set_opt = $set_opt.", `speed_id`=".$_GET["speed_id"];
+			if($__REQUEST["ip"]) $set_opt = $set_opt.", `ip_address`='".$__REQUEST["ip"]."'";
+			
+			$set_opt = $set_opt.",";
+		}
+	}
 	
 	if($_GET["money"] == "" || $_GET["money"] == "0") $opt_type = "3";
     $old_t = val_text("select * from user_pppoe where Id=".$uid,"disable_time");
     
-    $set_opt = "password='".$_GET["password"]."'";
-    if($row = mysql_fetch_array($dataset)){
-       $set_opt = $set_opt.", `up_speed`=".$row["up_speed"];
-       $set_opt = $set_opt.", `down_speed`=".$row["down_speed"];
-       $set_opt = $set_opt.", `lan_speed`=".$row["lan_speed_rx"];
-       $set_opt = $set_opt.", `speed_id`=".$_GET["speed_id"];
-       
-    }
-       $sql_update = "update user_pppoe set `disable_time`=now() where `disable_time`<now() and where Id=".$uid;
-       yjwt_mysql_do($sql_update);
-       $disable_time = "DATE_ADD(`disable_time`, Interval ".$_GET["months"]." month)";
-       $sql_update="update user_pppoe set ".$set_opt.", `disable_time`=".$disable_time." where Id=".$uid;
-       yjwt_mysql_do($sql_update);
+    $sql_update = "update user_pppoe set `disable_time`=now() where `disable_time`<now() and where Id=$uid";
+    yjwt_mysql_do($sql_update);//修正到期时间
 
-    if($_GET["days"] && $_GET["days"] !="" && $_GET["days"] !="0"){
-       $disable_time = "DATE_ADD(`disable_time`, Interval ".$_GET["days"]." day)";
-       $sql_update="update user_pppoe set ".$set_opt.", `disable_time`=".$disable_time." where Id=".$uid;
+    $disable_time = "DATE_ADD(`disable_time`, Interval $opt_months month)";
+    $sql_update = "update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
+    yjwt_mysql_do($sql_update);
+
+    if($_GET["days"]){
+       $disable_time = "DATE_ADD(`disable_time`, Interval $opt_days day)";
+       $sql_update="update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
        yjwt_mysql_do($sql_update);
      }
      echo "<br/>";
+	 
     $set_opt = "name='".$_GET["name"]."'";
     $set_opt = $set_opt.", phone='".$_GET["phone"]."'";
     $set_opt = $set_opt.", addr='".$_GET["addr"]."'";
     $set_opt = $set_opt.", idcar='".$_GET["idcar"]."'";
     $sql_update = "update user_info set ".$set_opt." where uid=".$uid;
     yjwt_mysql_do($sql_update);
+	
     $sql_update = "INSERT INTO `bill`(`opt_time`, `old_disable_time`,`new_disable_time`";
     $sql_update = $sql_update.",`months`";
     $sql_update = $sql_update.",`days`";
@@ -301,15 +332,15 @@ function uid_entry(){
     $sql_update = $sql_update.",'".$old_t."'";
     $new_t = val_text("select * from user_pppoe where Id=".$uid,"disable_time");
     $sql_update = $sql_update.",'".$new_t."'";
-    $sql_update = $sql_update.",'".$_GET["months"]."'";
-    $sql_update = $sql_update.",'".$_GET["days"]."'";
-    $sql_update = $sql_update.",'".$admin."'";
-    $sql_update = $sql_update.",'".$opt_type."'";
+    $sql_update = $sql_update.",'$opt_months'";
+    $sql_update = $sql_update.",'$opt_days'";
+    $sql_update = $sql_update.",'$admin'";
+    $sql_update = $sql_update.",'$opt_type'";
     $sql_update = $sql_update.",'".$_GET["orgid"]."'";
     $sql_update = $sql_update.",'".$_GET["orgmap"]."'";
-    $sql_update = $sql_update.",'".$_GET["speed_id"]."'";
+    $sql_update = $sql_update.",'$speed_id'";
     $sql_update = $sql_update.",'".$_GET["note"]."'";
-    $sql_update = $sql_update.",'".$_GET["money"]."'";
+    $sql_update = $sql_update.",'$money'";
     $sql_update = $sql_update.",'".$uid."')";
     yjwt_mysql_do($sql_update);
 	echo "<script type=\"text/javascript\"> alert('业务办理成功'); </script>";
