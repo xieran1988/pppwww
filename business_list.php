@@ -9,19 +9,23 @@
    		if($_REQUEST["s"]) $s_time = $_REQUEST["s"];
    		if($_REQUEST["e"]) $e_time = $_REQUEST["e"];
    		
-      echo "<form class=\"well\" method=\"get\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
+      echo "<form id=qrybis_form class=\"well\" method=\"get\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
       
       echo "<input name=\"t\" type=\"hidden\" value=\"findusr\"/>";
-      echo "关键字:";
-      echo "<input name=\"key\" type=\"text\" value=\"$str_key\"/> [项目、帐户、姓名、操作员...]";
-			echo "<br/>时间:";		
-      echo "<input name=\"s\" class=datetime type=\"text\" value=\"$s_time\"/> -> ";
+			echo "<table>";
+      echo "<tr><td>关键字</td>";
+      echo "<td><input name=\"key\" type=\"text\" value=\"$str_key\"/> [项目、帐户、姓名、操作员...]</td></tr>";
+			echo "<tr><td>时间</td>";		
+      echo "<td><input name=\"s\" class=datetime type=\"text\" value=\"$s_time\"/> -> ";
       echo "<input name=\"e\" class=datetime type=\"text\" value=\"$e_time\"/>";
-      echo "<br/>类型:";
-      echo "<select name=\"type\">";
+			echo "</tr>";
+			echo "<tr><td>类型</td>";
+      echo "<td><select name=\"type\">";
        dro_list_opt_type($opt_type);
-      echo "</select>";
-      echo "<br><button id=\"input_sub\" type=\"submit\">查询</button>";
+      echo "</select></td>";
+			echo "</tr>";
+			echo "<tr><td><button id=\"input_sub\" type=\"submit\">查询</button></td></tr>";
+			echo "</table>";
       echo "</form>";
    }
    function search_list(){
@@ -30,6 +34,8 @@
    	  $rows_id = 0;
    	  $startCount=0; 
    	  $perNumber = 8;
+	  $s_time=$_REQUEST["s"];
+	  $e_time=$_REQUEST["e"];
    	  $opt_type = $_REQUEST["type"];
    	  $str_key = $_REQUEST["key"]; 
    	  if($_REQUEST["page"]){
@@ -94,8 +100,8 @@
        echo "</tr>";
 	  }
       echo "</table>";
-      if($_REQUEST["page"]) echo "<a href='".$_SERVER["REQUEST_URI"]."&page=".($_REQUEST["page"]-1)."'>上一页 | </a>";
-   		if($rows_num >= $perNumber) echo "<a href='".$_SERVER["REQUEST_URI"]."&page=".($_REQUEST["page"]+1)."'>下一下</a>";
+      if($_REQUEST["page"]) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?type=$opt_type&key=$str_key&s=$s_time&e=$e_time&page=".($_REQUEST["page"]-1)."'>上一页 | </a>";
+   		if($rows_num >= $perNumber) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?type=$opt_type&key=$str_key&s=$s_time&e=$e_time&page=".($_REQUEST["page"]+1)."'>下一下</a>";
 
    }
    

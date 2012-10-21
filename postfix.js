@@ -33,6 +33,7 @@ $(document).ready(function() {
 			$(this).attr('href', h);
 		}
 	});
+	$('#right-pan > table, #right-pan > div > table').css({'margin-top':'20px'});
 	$('#right-pan a > button').each(function() {
 		//console.log('ab', $(this));
 		var a = $(this).parent();
@@ -50,5 +51,15 @@ $(document).ready(function() {
 	$('.datetime').datepicker({
 		format: 'yyyy-mm-dd'
 	});
+	$('#tc_select').change(function() {
+		if ($('#tc_select').val() == -2) {
+			$('#opt_menu').show();
+		} else {
+			$('#opt_menu').hide();
+		}
+	});
+	if ($('#tc_select').val() == -2) {
+		$('#opt_menu').show();
+	}
 });
 

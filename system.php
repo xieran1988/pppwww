@@ -5,7 +5,6 @@ if(login_check()==0) return;
 if(rule_check(2) == 0) return ;
 function user_password_form(){
 				echo "<form method=\"post\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
-
 				echo "<table>";
 				echo "<tr>";
 				echo "<td>UID:</td><td>".$_REQUEST["Id_user"]."</td>";
@@ -75,8 +74,8 @@ if ($_GET['t'] == 'manstaff') {
 if(!$_GET["id"]){
 				echo "<a href='system.php?id=4'>修改我的密码</a><hr/><a href='system.php?id=1'>员工</a>.<a href='system.php?id=2'>资费</a>.<a href='system.php?id=3'>带宽</a>";
 }else{
-				echo "<a href=?><button>返回</button></a>";
 }
+
 if($_GET["id"] && $_GET["id"] == "4") {
 				user_password_form();
 				return;

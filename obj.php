@@ -1,6 +1,32 @@
 <?php
 require_once("fun.php");
-
+function get_tc_list($orgmap, $speed){
+	$list_num = 0;
+	while($pos = strrpos($orgmap, ".")){
+		if($pos > 0){
+			$node_id = substr($orgmap, $pos + 1);
+			$orgmap = substr($orgmap, 0, $pos);
+		
+			$sql_select = "select * from org where Id=".$node_id;
+			$pro = val_text($sql_select, "pro");
+			if($pro != "NULL" && $pro != "ERROR"){
+				$sql_select = "select * from `tariff` where `group`='$pro' and `speed`=$speed";
+				echo $sql_select;
+				$dataset = yjwt_mysql_select($sql_select);
+				while($dataset && $row = mysql_fetch_array($dataset)){
+					$list_num += 1;
+					$opt_name = $row["name"]."{￥".$row["money"]."元".$row["months"]."月".$row["days"]."天 开户费:".$row["installation_fee"]."元|".$row["note"]."}";
+					$opt_value = $row["Id"];
+					echo "<option value=\"$opt_value\">$opt_name</option>";
+				}
+				break;
+			}			
+		}
+		else break;
+	}
+	echo "<option value=\"-2\">手工录入</option>";
+	return $list_num;
+}
 function business_form(){
     echo "<a href='business_management.php?id=1'>获取帐号</a>.";
 	echo "<a href='business_management.php?id=2'>业务录入</a>.";
@@ -31,7 +57,7 @@ function org_note_print($node_id, $script_opt){
 	$dataset = yjwt_mysql_select($sql_select);
 	while($row = mysql_fetch_array($dataset)){	
 		$last_node = $row["Id"];
-		echo "<a href=" . $script_opt . $row["Id"]."&orgmap=".$_GET["orgmap"].".".$row["Id"]."'>";
+		echo "<a href=" . $script_opt . $row["Id"]."&orgmap=".$_GET["orgmap"].".".$row["Id"].">";
 		echo "<button> ". $row["name"] . "</button>" ;
 		echo "</a>";
 		//_SERVER["SCRIPT_NAME"]
@@ -54,17 +80,18 @@ function org_note_head($node_id, $script_opt){
 }
 
 function new_user_form(){
+	$lefte_str = date('Ymd');
 	echo "<form class=well id=\"form_new_user\" method=\"get\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
-	echo "<label>获取：</label>";
+	echo "帐户带宽:";
 	echo "<select name=\"speed_id\">";
 	dro_list("select * from speed", "-1", "name", "Id");
 	echo "</select>";
-	echo "<label>帐号</label>";
+	echo "<br/>帐号前缀:<input name=\"lefte\" type=\"text\" value=\"$lefte_str\" />";
 	echo "<input name=\"opt\" type=\"hidden\" value=\"1\" />";
 	echo "<input name=\"node\" type=\"hidden\" value=\"".$_GET["node"]."\" />";
 	echo "<input name=\"orgmap\" type=\"hidden\" value=\"".$_GET["orgmap"]."\" />";
 	/*echo "<input type=\"hidden\" name=\"id\" value=\"".$_GET["id"]."\" />";*/
-	echo "<button id=\"input_sub\" type=\"submit\" >提交</button>";
+	echo "<br/><button id=\"input_sub\" type=\"submit\" >提交</button>";
 	echo "</form>";
 }
 
@@ -82,7 +109,8 @@ function get_org_map(){
 function new_user_do(){
     //$nextWeek = time() + (7 * 24 * 60 * 60); // 7 days; 24 hours; 60 mins; 60secs
 	//echo 'Now:       '. date('Y-m-d') ."\n";
-	$new_username = date('Ymd')."-";
+	if($_GET["lefte"]) $new_username = $_GET["lefte"]."-";
+	else $new_username = date('Ymd')."-";
 	$new_password = rand(10000000,99999999);
 	//$_GET["node"];
 	//$_GET["speed_id"]
@@ -179,31 +207,26 @@ function uid_entry_form(){
 				form_field("身份证号", "<input name=\"idcar\" type=\"text\" value=\"".$row["idcar"]."\" >");
         form_field("住址", "<input name=\"addr\" type=\"text\" value=\"".$row["addr"]."\" >");
 
-        $tcgroup = val_text("select * from org where Id=".$row["orgid"],"pro");
-#        echo   $tcgroup;
-#        echo "<br/>";
-        $tclist =  "select * from `tariff` where `group`='".$tcgroup."' and speed=".$row["speed_id"];
-#        echo $tclist;
-#        echo "<br/>";
-        form_field("密码", "<input name=\"password\" type=\"text\" value=\"".$row["password"]."\" >");
-        
-				form_field_header("带宽");
-        echo "<select name=\"speed_id\">";
-             dro_list("select * from speed", $row["speed_id"], "name", "Id");
-        echo "</select>";
-				form_field_tail();
+		$list_num = 0;
+		form_field_header("套餐");
+    echo "<select id=tc_select name=\"tc\">";
+		$list_num = get_tc_list($row["orgmap"], $row["speed_id"]);
+	  echo "</select>";
+		form_field_tail();
 
-        if(have_row($tclist)){
-						form_field_header("套餐");
-            echo "<select name=\"tc\">";
-	       		 dro_list($tclist, -1, "name", "Id");
-	      	  echo "</select>";
-						form_field_tail();
-	    }else{
-        	form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\"/>".
+		echo "<div id='opt_menu' style='display:none'>";
+			form_field("固定IP", "<input name=\"ip\" type=\"text\" value=\"".$row["ip_address"]."\" >");
+			form_field("密码", "<input name=\"password\" type=\"text\" value=\"".$row["password"]."\" >");
+			form_field_header("带宽");
+				echo "<select name=\"speed_id\">";
+				dro_list("select * from speed", $row["speed_id"], "name", "Id");
+				echo "</select>";
+			form_field_tail();
+      form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\"/>".
 														 "月<input name=\"days\" class=input-mini type=\"text\" value=\"0\" >");
-        	form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\"/>");;
-        }
+      form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\"/>");;
+    echo "</div>";
+
         form_field("备注", "<input name=\"note\" type=\"text\" value=\"业务\" >");
         form_field("", "<button id=\"input_sub\" type=\"submit\" >提交</button>");
 

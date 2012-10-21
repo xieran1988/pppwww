@@ -18,10 +18,20 @@ function fix_uptime($fix){
 	else return "从未上线";
 }
 function from_search(){
+	$str_key = $_REQUEST["key"];
+	$req_online = $_REQUEST["online"];
+	if($req_online) $b_online = "checked=true";
+	else $b_online = "";
+	$req_disable = $_REQUEST["disable_time"];
+	if($req_disable) $b_disable = "checked=true";
+	else $b_disable = "";
+	$req_opt = $_REQUEST["opt"];
+	$req_page = $_REQUEST["page"];
+	
 	echo "<form class=\"\" method=\"post\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
-	echo "关键字:<input name=\"key\" type=\"text\" />";
-	echo " 在线<input type=\"checkbox\" name=\"online\" value=\"1\">";
-	echo " 到期<input type=\"checkbox\" name=\"disable_time\" value=\"1\">";	
+	echo "关键字:<input name=\"key\" type=\"text\" value=\"$str_key\"/>";
+	echo " 在线<input type=\"checkbox\" $b_online name=\"online\" value=\"1\">";
+	echo " 到期<input type=\"checkbox\" $b_disable name=\"disable_time\" value=\"1\">";	
 	echo " <input id=\"input_sub\" type=\"submit\" value=\"提交\" />";
 	echo "<input name=\"opt\" type=\"hidden\" value=\"1\" />";
 	echo "</form>";
@@ -30,6 +40,12 @@ function table_user(){
     $startCount = 0;
 	$perNumber = 10;
 	$num = 0;
+	$str_key = $_REQUEST["key"];
+	$req_online = $_REQUEST["online"];
+	$req_disable = $_REQUEST["disable_time"];
+	$req_opt = $_REQUEST["opt"];
+	$req_page = $_REQUEST["page"];
+	
 	if($_REQUEST["page"]) $startCount = $_REQUEST["page"]*$perNumber;
 	$sql_select = "select * from user_pppoe right join user_info on user_pppoe.id = user_info.uid";
 	if($_REQUEST["opt"]){
@@ -91,8 +107,8 @@ function table_user(){
 	}
 	if($num==0) echo "<tr><td>未找到数据</td></tr>";
 	echo "</table>";
-	if($_REQUEST["page"]) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?page=".($_REQUEST["page"]-1)."'>上一页</a> | ";
-	if($num == $perNumber) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?page=".($_REQUEST["page"]+1)."'>下一页</a>";
+	if($_REQUEST["page"]) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?opt=$req_opt&key=$str_key&online=$req_online&disable_time=$req_disable&page=".($_REQUEST["page"]-1)."'>上一页</a> | ";
+	if($num == $perNumber) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?opt=$req_opt&key=$str_key&online=$req_online&disable_time=$req_disable&page=".($_REQUEST["page"]+1)."'>下一页</a>";
 	if($_GET["uid"]){
 		echo "<p>详细信息<p>";
 		echo "<table class=\"table table-condensed\">";

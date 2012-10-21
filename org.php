@@ -14,8 +14,19 @@ if ($_GET['t'] != 'manorg')
 //if(login_check()==0) return;
 
 function org_rows($obj, $id, $name){
-				if(!$obj[$name] || $obj[$name] == "") $obj[$name] = "NULL";
-				echo "<div ><a href=\"?node=".$obj[$id]."\">"."<button>".$obj[$name]. "</button>"."</a> | </div>";
+	$org_id = $obj["Id"];
+	echo "<td>$org_id</td>";
+	
+	$org_name=$obj["name"];
+	echo "<td>$org_name</td>";
+	
+	$org_note = $obj["note"];
+	echo "<td>$org_note</td>";
+	echo "<td><a href='?node=$org_id'>查看</a></td>";
+	/*
+	if(!$obj[$name] || $obj[$name] == "") $obj[$name] = "NULL";
+	echo "<div ><a href=\"?node=".$obj[$id]."\">"."<button>".$obj[$name]. "</button>"."</a> | </div>";
+	*/
 }
 function get_title($id_node){
 				$sql_txt = "select * from org where Id = ".$id_node;
@@ -23,12 +34,15 @@ function get_title($id_node){
 				while($sql_row = mysql_fetch_array($sql_vaule))
 				{
 								if(!$sql_row["name"] || $sql_row["name"] == "") $sql_row["name"] = "NULL";
-								echo $sql_row["note"]."<hr/>";
-								echo "[<a href=\"?node=".$sql_row["Id"]."\">".$sql_row["name"]."</a>]";
-								echo ".<a href=\"?node=".$sql_row["father_node"]."\"><button>上一级</button></a> ";
-								echo ".<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=1\"><button>删除本级</button></a> ";
-								echo ".<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=4\"><button>修改本级</button></a> ";
-								echo ".<a href=\"?\"><button>返回</button></a> .";
+								echo "<div class=well>";
+								#echo "[<a href=\"?node=".$sql_row["Id"]."\">".$sql_row["name"]."</a>]";
+								echo "<h3>".$sql_row["name"]."</h3>";
+								echo $sql_row["note"]."";
+								echo "</div>";
+								echo "<a href=\"?node=".$sql_row["father_node"]."\"><button>上一级</button></a> ";
+								echo "<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=1\"><button class='btn-danger btn-del'>删除本级</button></a> ";
+								echo "<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=4\"><button>修改本级</button></a> ";
+								echo "<a href=\"?\"><button>返回</button></a> .";
 								break;
 								//org_rows($row, "Id", "name", "20px");
 				}
@@ -64,7 +78,7 @@ if($opt){
 								/////////////////////////////////////////////////
 								if($opt == "3"){
 												//opt=3, 呈现插入操作表单
-												echo "<p>子级添加</p>";
+												echo "<p>添加项目</p>";
 												$optv = 2;
 												$show_note = $_GET["up_node"];
 								}
@@ -77,7 +91,7 @@ if($opt){
 																$pro_group =  $sql_crow["pro"];
 												}
 												//opt=4, 呈现修改操作表单
-												echo "<p>子级修改</p>";
+												echo "<p>项目修改</p>";
 												$optv = 5;
 												$show_note = $cur_node;
 								}
@@ -111,7 +125,7 @@ if($opt){
 								$sql_insert = "INSERT INTO org(name, father_node, pro, note ) VALUES ('".$_GET["input_name"]."',".$_GET["node"].",'".$_GET["pro"]."','".$_GET["input_note"]."');";
 								//echo $sql_insert;
 								if(have_user($_GET["node"])){
-												echo "<script type=\"text/javascript\"> alert('存在有效用户不能添加子级'); </script>";
+												echo "<script type=\"text/javascript\"> alert('存在有效用户不能添加项目'); </script>";
 								}else{
 												yjwt_mysql_do($sql_insert);
 								}
@@ -125,7 +139,7 @@ if($opt){
 												$tmp_rows = mysql_fetch_array($tmp_result);
 
 												if($tmp_rows){
-																echo "<script type=\"text/javascript\"> alert('存在子级不允许删除'); </script>";
+																echo "<script type=\"text/javascript\"> alert('存在子项目不允许删除'); </script>";
 												}
 												else if(have_user($_GET["node"])){
 																echo "<script type=\"text/javascript\"> alert('存在有效用户不能删除'); </script>";
@@ -150,15 +164,23 @@ if($opt){
 }
 if(!$opt || ($opt != "3" && $opt != "1" && $opt != "4")){
 				get_title($cur_node);
-				echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button>添加子级</button></a>";
+				echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button>添加项目</button></a>";
 
 				$sql_cmd = "select * from org where father_node = ".$cur_node;
 				$sql_result = yjwt_mysql_select($sql_cmd);
 				echo "<div id=\"org_list\">";
+				echo "<table class=\"table table-condensed\">";
+				echo "<tr>";
+				echo "<td>项目ID</td><td>项目名称</td><td>项目备注</td><td>查看项目</td>";
+				echo "</tr>";
 				while($row = mysql_fetch_array($sql_result))
 				{
-								org_rows($row, "Id", "name");
+					echo "<tr>";
+					org_rows($row, "Id", "name");
+					echo "</tr>";
 				}
+				echo "</table>";
 				echo "</div>";
+				
 }
 ?>

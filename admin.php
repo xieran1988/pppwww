@@ -19,6 +19,9 @@
       .sidebar-nav {
         padding: 9px 0;
       }
+			#qrybis_form span {
+				
+			}
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/datepicker.css" rel="stylesheet">
@@ -78,8 +81,8 @@
 							<li><a href=?t=manprice>资费管理</a></li>
 							<li><a href=?t=manband>带宽管理</a></li>
 							<li><a href=?t=modpass>修改密码</a></li>
-							<li class=nav-header>组织管理</li>
-							<li><a href=?t=manorg>组织管理</a></li>
+							<li class=nav-header>项目管理</li>
+							<li><a href=?t=manorg>项目管理</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
