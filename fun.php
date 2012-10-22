@@ -78,6 +78,8 @@ function login_check(){
 		echo "</script>";
 		return 0;
 	}
+	//setcookie("php_user", $_COOKIE["php_user"], time()+1800);//半小时,这个语句必需要html这前
+	//setcookie("Id_user", $_COOKIE["Id_user"], time()+1800);
 	return 1;
 }
 

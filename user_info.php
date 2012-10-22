@@ -64,7 +64,7 @@ function table_user(){
 		}
 	}
 	if($_GET["uid"]) $sql_select = $sql_select." where uid='".$_GET["uid"]."'";
-	else $sql_select = $sql_select." limit ".$startCount.",".$perNumber;
+	else $sql_select = $sql_select." order by uid desc limit ".$startCount.",".$perNumber;
 	//echo $sql_select;
 	$dataset = yjwt_mysql_select($sql_select);
 	echo "<table class=\"table table-condensed\">";

@@ -66,7 +66,7 @@ $(document).ready(function() {
 		var regions = $(this).html().split(',');
 		regions.pop();
 		var data = [];
-		var w = 0.125;
+		var w = 1./(regions.length*2);
 		var nrmonths = 3;
 
 		for (var j = 0; j < regions.length; j++) {
@@ -82,8 +82,6 @@ $(document).ready(function() {
 			ticks.push([i+regions.length*w/2, (9+i)+'月份']);
 		}
 
-		console.log(data, ticks);
-		
 		var options = {
 			xaxis: { ticks: ticks, min: -0.2, max: nrmonths, },
 		};

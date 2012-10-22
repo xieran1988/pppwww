@@ -14,7 +14,7 @@
       echo "<input name=\"t\" type=\"hidden\" value=\"findusr\"/>";
 			echo "<table>";
       echo "<tr><td>关键字</td>";
-      echo "<td><input name=\"key\" type=\"text\" value=\"$str_key\"/> [项目、帐户、姓名、操作员...]</td></tr>";
+      echo "<td><input name=\"key\" type=\"text\" value=\"$str_key\"/> [项目、UID、姓名、操作员...]</td></tr>";
 			echo "<tr><td>时间</td>";		
       echo "<td><input name=\"s\" class=datetime type=\"text\" value=\"$s_time\"/> -> ";
       echo "<input name=\"e\" class=datetime type=\"text\" value=\"$e_time\"/>";
@@ -50,8 +50,9 @@
       if($opt_type != "-1") $sql_select=$sql_select." and opt_type = $opt_type";
       $sql_select = $sql_select." and opt_time>='".$_GET["s"]."' and opt_time<='".$_GET["e"]."'";
       if($str_key) $sql_select = $sql_select." and (user_info.uid='$str_key' or org.name='$str_key' or user_info.name='$str_key' or user_info.addr like '%$str_key%')";
-      //echo $sql_select;
-	  	$sql_select = $sql_select." limit ".$startCount.",".$perNumber;
+      //echo $sql_select;order by
+	  $sql_select = $sql_select." order by opt_time desc";
+	  $sql_select = $sql_select." limit ".$startCount.",".$perNumber;
       $dataset = yjwt_mysql_select($sql_select);
       
       echo "<table class=\"table table-condensed\">";
@@ -101,7 +102,7 @@
 	  }
       echo "</table>";
       if($_REQUEST["page"]) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?type=$opt_type&key=$str_key&s=$s_time&e=$e_time&page=".($_REQUEST["page"]-1)."'>上一页 | </a>";
-   		if($rows_num >= $perNumber) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?type=$opt_type&key=$str_key&s=$s_time&e=$e_time&page=".($_REQUEST["page"]+1)."'>下一下</a>";
+   	  if($rows_num >= $perNumber) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?type=$opt_type&key=$str_key&s=$s_time&e=$e_time&page=".($_REQUEST["page"]+1)."'>下一页</a>";
 
    }
    

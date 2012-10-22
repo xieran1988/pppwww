@@ -2,16 +2,16 @@
 require_once("fun.php");
 function get_tc_list($orgmap, $speed){
 	$list_num = 0;
-	while($pos = strrpos($orgmap, ".")){
-		if($pos > 0){
+	while(1){
+		$pos = strrpos($orgmap, ".");
+		if($pos >= 0){
 			$node_id = substr($orgmap, $pos + 1);
 			$orgmap = substr($orgmap, 0, $pos);
-		
 			$sql_select = "select * from org where Id=".$node_id;
 			$pro = val_text($sql_select, "pro");
-			if($pro != "NULL" && $pro != "ERROR"){
+			if($pro && $pro != "NULL" && $pro != "ERROR" && $pro !=""){
 				$sql_select = "select * from `tariff` where `group`='$pro' and `speed`=$speed";
-				echo $sql_select;
+				//echo $sql_select;
 				$dataset = yjwt_mysql_select($sql_select);
 				while($dataset && $row = mysql_fetch_array($dataset)){
 					$list_num += 1;
@@ -19,10 +19,9 @@ function get_tc_list($orgmap, $speed){
 					$opt_value = $row["Id"];
 					echo "<option value=\"$opt_value\">$opt_name</option>";
 				}
-				break;
-			}			
-		}
-		else break;
+			}
+			if($list_num > 0) break;
+		}else break;
 	}
 	echo "<option value=\"-2\">手工录入</option>";
 	return $list_num;
@@ -201,13 +200,11 @@ function uid_entry_form(){
 			echo "</div>";
 	    //////////////////////////////////////
 	    echo "<form id=\"form_new_user\" class='well form-horizontal' method=\"get\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
-			echo "<fieldset>";
-
-				form_field("姓名", "<input class=input name=\"name\" type=\"text\" value=\"".$row["name"]."\" >");
-				form_field("电话", "<input name=\"phone\" type=\"text\" value=\"".$row["phone"]."\" >");
-				form_field("身份证号", "<input name=\"idcar\" type=\"text\" value=\"".$row["idcar"]."\" >");
+		echo "<fieldset>";
+		form_field("姓名", "<input class=input name=\"name\" type=\"text\" value=\"".$row["name"]."\" >");
+		form_field("电话", "<input name=\"phone\" type=\"text\" value=\"".$row["phone"]."\" >");
+		form_field("身份证号", "<input name=\"idcar\" type=\"text\" value=\"".$row["idcar"]."\" >");
         form_field("住址", "<input name=\"addr\" type=\"text\" value=\"".$row["addr"]."\" >");
-
 		$list_num = 0;
 		form_field_header("套餐");
         echo "<select id=tc_select name=\"tc\">";
@@ -222,25 +219,20 @@ function uid_entry_form(){
 			echo "<select name=\"speed_id\">";
             dro_list("select * from speed", $row["speed_id"], "name", "Id");
 			echo "</select>";
-			form_field_tail();
-			
-        	form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\"/>".
-														 "月<input name=\"days\" class=input-mini type=\"text\" value=\"0\" >");
+			form_field_tail();			
+        	form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\"/>".														 "月<input name=\"days\" class=input-mini type=\"text\" value=\"0\" >");
         	form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\"/>");;
         echo "</div>";
         form_field("备注", "<input name=\"note\" type=\"text\" value=\"业务\" >");
         form_field("", "<button id=\"input_sub\" type=\"submit\" >提交</button>");
 
         echo "<input name=\"opt\" type=\"hidden\" value=\"3\" />";
-		echo "<input name=\"opt_type\" type=\"hidden\" value=\"".$opt_type."\" />";
+		echo "<input name=\"opt_type\" type=\"hidden\" value=\"$opt_type\" />";
         echo "<input name=\"uid\" type=\"hidden\" value=\"".$row["uid"]."\" />";
         echo "<input name=\"orgmap\" type=\"hidden\" value=\"".$row["orgmap"]."\" />";
         echo "<input name=\"orgid\" type=\"hidden\" value=\"".$row["orgid"]."\" />";
-
-				echo "</fieldset>";
+		echo "</fieldset>";
         echo "</form>";
-
-
 	}else{
           echo "<script type=\"text/javascript\"> alert('输入的帐户不存在'); ";
           echo "location.href = '?t=putbis';";
@@ -248,15 +240,11 @@ function uid_entry_form(){
 	}
 }
 function uid_entry(){
-	$set_opt;
-    $uid = $_REQUEST["uid"];
-    
-    //admin
-	$admin = $_REQUEST["php_user"];
-	if($admin == NULL || $admin == "") $admin = "1";
-    //$opt_type ="1";//1==开户，2=续费, 3=变更
 	
-	$opt_type = $_REQUEST["opt_type"];
+	
+    $uid = $_REQUEST["uid"];
+	$admin = $_REQUEST["php_user"];
+	$opt_type = $_REQUEST["opt_type"];//1==开户，2=续费, 3=变更
 	$opt_months = $_REQUEST["months"];
 	$opt_days = $_REQUEST["days"];
 	$money = $_REQUEST["money"];
@@ -265,8 +253,9 @@ function uid_entry(){
 	if($money == NULL || $money == "") $money = "0";
 	if($opt_months == NULL || $opt_months=="") $opt_months = "0";
 	if($opt_days == NULL || $opt_days=="") $opt_days = "0";
-	if($_REQUEST["tc"] < 0) $opt_type = "3";
+	if($admin == NULL || $admin == "") $admin = "1";
 	
+	$set_opt;
 	if($_REQUEST["tc"] && $_REQUEST["tc"] >= 0){
 		$sql_select="select * from tariff where Id =".$_REQUEST["tc"];
 		$dataset = yjwt_mysql_select($sql_select);
@@ -288,12 +277,12 @@ function uid_entry(){
 			$set_opt = $set_opt.", `lan_speed`=".$row["lan_speed_rx"];
 			$set_opt = $set_opt.", `speed_id`=".$_GET["speed_id"];
 			if($__REQUEST["ip"]) $set_opt = $set_opt.", `ip_address`='".$__REQUEST["ip"]."'";
-			
+			$opt_type = "3";
 			$set_opt = $set_opt.",";
 		}
 	}
 	
-	if($_GET["money"] == "" || $_GET["money"] == "0") $opt_type = "3";
+	if($money == "" || $money == "0") $opt_type = "3";
     $old_t = val_text("select * from user_pppoe where Id=".$uid,"disable_time");
     
     $sql_update = "update user_pppoe set `disable_time`=now() where `disable_time`<now() and where Id=$uid";
@@ -343,6 +332,7 @@ function uid_entry(){
     $sql_update = $sql_update.",'$money'";
     $sql_update = $sql_update.",'".$uid."')";
     yjwt_mysql_do($sql_update);
+	//echo $sql_update;
 	echo "<script type=\"text/javascript\"> alert('业务办理成功'); </script>";
 	echo "<script type=\"text/javascript\"> window.location.href = '?t=putbis' </script>";
     
