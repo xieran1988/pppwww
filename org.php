@@ -4,8 +4,8 @@ require_once("fun.php");
 ?>
 
 <?php
-if(login_check()==0) return;
-if(rule_check(2) == 0) return ;
+//if(login_check()==0) return;
+//if(rule_check(2) == 0) return ;
 
 if ($_GET['t'] != 'manorg')
 	return ;
@@ -96,7 +96,6 @@ function get_title(){
 		echo "<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=29\"><button>聚合用户</button></a> ";
 		echo "<a href=\"?\"><button>返回</button></a> ";
 		break;
-		//org_rows($row, "Id", "name", "20px");
 	}
 }
 
@@ -106,7 +105,7 @@ function break_org(){
 	//echo $sql_update;
 	yjwt_mysql_do($sql_update);
 	echo "<script type=\"text/javascript\">";
-	$page = $_SERVER["SCRIPT_NAME"]."?t=manorg&node=".$_GET["up_node"];
+	$page = $_SERVER["SCRIPT_NAME"]."?t=manorg&node=".$_GET["node"];
 	echo "location.href='$page';";
 	echo "</script>";
 }
@@ -123,7 +122,8 @@ function break_chi_org(){
 function join_org(){
 	if(!$_GET["node"]) return;
 	$sql_select = "select * from user_info where orgid =".$_GET["node"];
-	if(have_row($sql_select)) {
+	$sql_select2 = "select * from `org` where father_node =".$_GET["node"];
+	if(have_row($sql_select) || have_row($sql_select2)) {
 		echo "<script type=\"text/javascript\">";
 		echo "alert('本项目存在用户不能聚合');";
 		echo "</script>";
@@ -141,6 +141,7 @@ function break_user_info(){
 	if(!$_GET["node"]) return;
 	$sql_update = "UPDATE `user_info` SET orgid='-2' where orgid=".$_GET["node"];
 	yjwt_mysql_do($sql_update);
+	
 	echo "<script type=\"text/javascript\">";
 	$page = $_SERVER["SCRIPT_NAME"]."?t=manorg&node=".$_GET["node"];
 	echo "location.href='$page';";
@@ -149,7 +150,6 @@ function break_user_info(){
 function join_user_info(){
 	if(!$_GET["node"]) return;
 	$sql_select = "select * from `org` where father_node =".$_GET["node"];
-	
 	if(have_row($sql_select)) {
 		echo "<script type=\"text/javascript\">";
 		echo "alert('本项目存在子项目不能聚合用户');";
@@ -210,7 +210,7 @@ if($opt == "28"){
 	return;
 }
 //聚合用户
-if($opt == "28"){
+if($opt == "29"){
 	join_user_info();
 	return;
 }

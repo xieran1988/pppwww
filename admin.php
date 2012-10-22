@@ -53,7 +53,7 @@
 		
 		<div class="container-fluid">
 
-		<? if ($_GET['t'] == 'login') { ?>
+		<? if ($_GET[t] == 'login') { ?>
 
 			<form class=well method=post action="login.php"
 					style="width: 300px; position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1" >
@@ -98,12 +98,14 @@
         </div><!--/span-->
 
         <div id=right-pan class="span9">
+					<? if (rule_check()) { ?>
 					<?php require_once("business_management.php") ?>
 					<?php require_once("business_list.php") ?>
 					<?php require_once("system.php") ?>
 					<?php require_once("org.php") ?>
 					<?php require_once("user_info.php") ?>
 					<?php require_once("netmon.php") ?>
+					<? } ?>
         </div><!--/span-->
 
       </div><!--/row-->

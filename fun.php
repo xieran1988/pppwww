@@ -1,16 +1,16 @@
 <?php
 
 if ($_GET['t'] == 'exit') {
-	?><script> 
-		alert('请重新登陆！'); 
-		window.location.href = '?t=login';
-	</script> <?
+	echo "<script>";
+	echo "alert('请重新登陆！');";
+	echo "window.location.href = '?t=login';";
+	echo "</script>";
 }
 
 if ($_GET['t'] == '') {
-	?><script> 
-		window.location.href = '?t=getid';
-	</script> <?
+	echo "<script>";
+	echo "window.location.href = '?t=getid';";
+	echo "</script>";
 }
 
 login_check();
@@ -83,16 +83,24 @@ function login_check(){
 	return 1;
 }
 
-function rule_check($ru){
-	return 1;
+function rule_ok($ru) {
 	if($_COOKIE["php_user"]==$ru || $_COOKIE["php_user"]==3){
 		return 1;
 	}
-	echo "flag=".$_COOKIE["php_user"];
-	echo "<script type=\"text/javascript\">";
-	echo "alert('非工作内容请勿进入');";
-	echo "</script>";
 	return 0;
+}
+
+function rule_check() {
+	$arr = array('manorg', 'manstaff', 'manprice', 'manband');
+	if (in_array($_GET[t], $arr) && !rule_ok(2)) {
+		?>
+		<div class="alert alert-error">
+			警告：非工作人员请勿进入！
+		</div>
+		<?
+		return 0;
+	}
+	return 1;
 }
 function opt_type($opt_v){
 	if($opt_v == 1) return "开户";
@@ -132,7 +140,6 @@ function btn_edit_del($edit, $del) {
 }
 
 function jmp($url) {
-	?> <script> window.location.href = "<?= $url ?>" </script> <?
 }
 
 ?>

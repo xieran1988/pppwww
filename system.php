@@ -1,8 +1,8 @@
 <?php 
 require_once("sql.php"); 
 require_once("obj.php");
-if(login_check()==0) return;
-if(rule_check(2) == 0) return ;
+//if(login_check()==0) return;
+//if(rule_check(2) == 0) return ;
 function user_password_form(){
 				echo "<form method=\"post\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
 				echo "<table>";
@@ -55,8 +55,8 @@ function user_password_do(){
 
 ?>
 <?php 
-if(login_check()==0) return;
-if(rule_check(2) == 0) return ;
+#if(login_check()==0) return;
+#if(rule_check(2) == 0) return ;
 
 $optt = "t=$_GET[t]";
 if ($_GET['t'] == 'manstaff') {
