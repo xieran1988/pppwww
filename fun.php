@@ -1,5 +1,13 @@
 <?php
 
+function longer_cookie($name) {
+	if ($_COOKIE[$name])
+		setcookie($name, $_COOKIE[$name], time() + 1800);
+}
+
+longer_cookie('php_user');
+longer_cookie('Id_user');
+
 if ($_GET['t'] == 'exit') {
 	echo "<script>";
 	echo "alert('请重新登陆！');";
