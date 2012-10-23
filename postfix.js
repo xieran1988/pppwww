@@ -62,28 +62,44 @@ $(document).ready(function() {
 		$('#opt_menu').show();
 	}
 
-	function do_plot(graph, data, options) {
+	function graph_create_form(div) {
+		var form = div.find('.graph-form');
+		var j = jQuery.parseJSON(form.find('data').html());
+		var rows = j.rows;
 
+		for (var i in rows) {
+			var r = rows[i];
+			var html = '<label class="checkbox">' + 
+				    		 '<input type="checkbox" checked row=' + i + '>' + r + 
+						  	 '</label>';
+			form.append($(html).change(function() {
+				graph_do_plot($(this).closest('.graph-div'));
+			}));
+		}
+
+		graph_do_plot(div);
 	}
 
-	$('.graph-div').each(function () {
-		var form = $(this).find('.graph-form');
-		console.log(form);
+	function graph_do_plot(div, opts) {
+		var form = div.find('.graph-form');
 		var j = jQuery.parseJSON(form.find('data').html());
-		console.log(j);
 		var rows = j.rows;
 		var cols = j.cols;
 		var data = j.data;
 		var yunit = j.yunit;
 		var w = 1./(rows.length*2);
-		var nrmonths = 3;
+		var checks = form.find('input[checked]');
+
+		console.log(checks);
 
 		for (var j = 0; j < rows.length; j++) {
-			var d = [];
-			for (var i = 0; i < cols.length; i++) {
-				d.push([i+j*w, data[i][j]]);
+			if (form.find('input[row=' + j + ']').attr('checked')) {
+				var d = [];
+				for (var i = 0; i < cols.length; i++) {
+					d.push([i+j*w, data[i][j]]);
+				}
+				data.push({data:d, bars:{show:true, barWidth:w}, label:rows[j]});
 			}
-			data.push({data:d, bars:{show:true, barWidth:w}, label:rows[j]});
 		}
 
 		var ticks = [];
@@ -96,20 +112,13 @@ $(document).ready(function() {
 			yaxis: { tickFormatter: function (num, obj) { return num + ' ' + yunit;} },
 		};
 
-		for (var i in rows) {
-			var r = rows[i];
-			var html = '<label class="checkbox">' + 
-				    		 '<input type="checkbox" checked>' + r + 
-						  	 '</label>';
-			form.append($(html).change(function() {
-				$(this).closet('.graph-div');
-			}));
-		}
-		
-		var graph = $(this).find('.graph');
+		var graph = div.find('.graph');
 		$.plot(graph, data, options);
-
 		graph.show();
+	}
+
+	$('.graph-div').each(function () {
+		graph_create_form($(this));
 	});
 
 });
