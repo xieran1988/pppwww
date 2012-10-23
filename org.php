@@ -15,21 +15,53 @@ $input_name = $_GET["input_name"];
 
 
 function org_list(){
+	global $opt;
 	$cur_node = $_GET["node"];
 	if(!$cur_node) $cur_node = "0";
 	get_title();
-	echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button class=btn-primary>添加项目</button></a>";
-	echo " <a href=\"?opt=6\"><button>对比收入</button></a>";
 
 	if ($opt == '6') {
+		echo "<div class=container>";
+		echo "<a class=btn onclick='window.history.back(-1);'>返回</a>";
+		echo "</div><br>";
+
+		echo "<div class=graph-div>";
+
+		echo "<div class=container>";
 		$sql_cmd = "select * from org where father_node = ".$cur_node;
 		$sql_result = yjwt_mysql_select($sql_cmd);
-		echo "<div class=graph>";
+		$rows = array();
 		while($row = mysql_fetch_array($sql_result)) {
-			echo "$row[name],";
+			array_push($rows, $row[name]);
 		}
+		$cols = array('9月', '10月', '11月');
+		$data_arr = array();
+		for ($i = 0; $i < count($cols); $i++) {
+			$a = array();
+			for ($j = 0; $j < count($rows); $j++) {
+				array_push($a, rand(40, 100));
+			}
+			array_push($data_arr, $a);
+		}
+		$data = array(
+			'title'=>'9,10,11月份收入对比图',
+			'yunit'=>'元',
+			'rows'=>$rows, 
+			'cols'=>$cols,
+			'data'=>$data_arr,
+		);
+		echo "<form auto=no class='graph-form form-inline'>";
+	 	echo "<data>" . json_encode($data) . "</data>";
+		echo "</form>";
 		echo "</div>";
+
+		echo "<div class=graph></div>";
+
+		echo "</div>";
+
 	} else {
+		echo "<a href=\"org.php?node=".$cur_node."&opt=3\"><button class=btn-primary>添加项目</button></a>";
+		echo " <a href=\"?opt=6\"><button>对比收入</button></a>";
 		$sql_cmd = "select * from org where father_node = ".$cur_node;
 		$sql_result = yjwt_mysql_select($sql_cmd);
 		echo "<div id=\"org_list\">";

@@ -23,7 +23,7 @@ $(document).ready(function() {
 	var a = $('#right-pan input[type="submit"]');
 	a.replaceWith('<button type=submit>提交</button>');
 	$('#right-pan button').addClass("btn");
-	$('#right-pan form').addClass("well");
+	$('#right-pan form[auto!=no]').addClass("well");
 	$('#right-pan a').each(function (i) {
 		//console.log('this=', this);
 		var h = $(this).attr('href');
@@ -62,31 +62,54 @@ $(document).ready(function() {
 		$('#opt_menu').show();
 	}
 
-	$('.graph').each(function () {
-		var regions = $(this).html().split(',');
-		regions.pop();
-		var data = [];
-		var w = 1./(regions.length*2);
+	function do_plot(graph, data, options) {
+
+	}
+
+	$('.graph-div').each(function () {
+		var form = $(this).find('.graph-form');
+		console.log(form);
+		var j = jQuery.parseJSON(form.find('data').html());
+		console.log(j);
+		var rows = j.rows;
+		var cols = j.cols;
+		var data = j.data;
+		var yunit = j.yunit;
+		var w = 1./(rows.length*2);
 		var nrmonths = 3;
 
-		for (var j = 0; j < regions.length; j++) {
+		for (var j = 0; j < rows.length; j++) {
 			var d = [];
-			for (var i = 0; i < nrmonths; i++) {
-				d.push([i+j*w, Math.random()*100]);
+			for (var i = 0; i < cols.length; i++) {
+				d.push([i+j*w, data[i][j]]);
 			}
-			data.push({data:d, bars: {show:true, barWidth:w}, label:regions[j]});
+			data.push({data:d, bars:{show:true, barWidth:w}, label:rows[j]});
 		}
 
 		var ticks = [];
-		for (var i = 0; i < nrmonths; i++) {
-			ticks.push([i+regions.length*w/2, (9+i)+'月份']);
+		for (var i = 0; i < cols.length; i++) {
+			ticks.push([i+rows.length*w/2, cols[i]]);
 		}
 
 		var options = {
-			xaxis: { ticks: ticks, min: -0.2, max: nrmonths, },
+			xaxis: { ticks: ticks, min: -0.2, max: cols.length, },
+			yaxis: { tickFormatter: function (num, obj) { return num + ' ' + yunit;} },
 		};
-		$.plot($(this), data, options);
-		$(this).show();
+
+		for (var i in rows) {
+			var r = rows[i];
+			var html = '<label class="checkbox">' + 
+				    		 '<input type="checkbox" checked>' + r + 
+						  	 '</label>';
+			form.append($(html).change(function() {
+				$(this).closet('.graph-div');
+			}));
+		}
+		
+		var graph = $(this).find('.graph');
+		$.plot(graph, data, options);
+
+		graph.show();
 	});
 
 });

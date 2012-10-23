@@ -22,6 +22,9 @@
 			.netmon-table {
 				width: 100px ;
 			}
+			.graph-form data {
+				display:none;
+			}
 			.graph {
 				display:none;
 				width: 600px;
