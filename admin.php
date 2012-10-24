@@ -22,7 +22,7 @@
         padding: 9px 0;
       }
 			.netmon-table {
-				width: 100px ;
+				width: 500px ;
 			}
 			.graph-form data {
 				display:none;

@@ -95,8 +95,11 @@ function table_user(){
 		$user_addr = $row["addr"];
 		$user_phone = $row["phone"];
 		$str_note = $row["note"];
+		
 		if(!$str_note) $str_note = "无备注信息";
-		echo "<td><div style='float:left;' rel=\"popover\" data-content=\"ADDR:$user_addr<br/>PHON:$user_phone<br/>NOTE:$str_note\" data-original-title=\"联系方式\">$user_name</div></td>";
+		$id_car = $row["idcar"];
+		$uinfo = "ADDR:$user_addr<br/>PHON:$user_phone<br/>IDEN:$id_car<br/>NOTE:$str_note";
+		echo "<td><div style='float:left;' rel=\"popover\" data-content=\"$uinfo\" data-original-title=\"联系方式\">$user_name</div></td>";
 		#echo "<td>".$row["addr"]."</td>";
 		#echo "<td>".$row["phone"]."</td>";
 		#echo "<td>".$row["idcar"]."</td>";

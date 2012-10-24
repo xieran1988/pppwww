@@ -2,13 +2,15 @@
 $(document).ready(function() {
 	var qry = window.location.search.substr(1);
 	var params = qry.split('&');
+	var get = {};
 	var m;
 	for (var i in params) {
 		var t = params[i];
-		if (t.match(/^t=/)) {
-			m = t;
-		}
+		var ta = t.split('=');
+		get[ta[0]] = ta[1];
 	}
+	m = 't=' + get['t'];
+
 	//console.log('params:', params);
 	$('#right-pan form').append('<input type=hidden name=t value=' + m.substr(2) + ' >');
 	$('#right-pan form').attr('action', '?' + m);
@@ -117,5 +119,18 @@ $(document).ready(function() {
 		$(this).popover({trigger:'hover'});
 		//console.log($(this));
 	});
+
+	$('select').each(function() {
+		var name = $(this).attr('name');
+		if (name in get) {
+			var v = get[name];
+			$(this).find('option').each(function() {
+				if ($(this).val() == v) {
+					$(this).attr('selected', '1');
+				}	
+			});
+		}
+	});
+
 });
 

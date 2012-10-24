@@ -1,6 +1,6 @@
 
 <? if ($_GET['t'] == 'netmon') { ?>
-<form class=well>
+<form class=well method=get action="?">
 <table>
 
 <tr>
@@ -26,7 +26,7 @@
 </td>
 <td>
 <select name="type">
-  <option value="1" selected="selected">QQ</option>
+  <option value="1">QQ</option>
   <option value="55">URL、weibo、E-maill</option>
 </select>
 </td>
@@ -47,23 +47,31 @@
 		$start = $_GET['start'];
 	$end = $start + $pagenr;
 	if ($_GET['datestart'] && $_GET['dateend']) {
+		if ($_GET[type] == '1')
+			$fname = 'qq';
+		else 
+			$fname = 'url';
 		?> 
 		<table class="table table-condensed netmon-table">
 			<tr>
 				<td>编号</td>
-				<td>用户名</td>
+				<td>IP</td>
 				<td>日期</td>
+		<? if ($fname == 'url') { ?>
 				<td>记录</td>
+		<? } else { ?>
+				<td>QQ</td>
+		<? } ?>
 			</tr>
 		<?
 		$prefix = "/var/www/netmondata";
-		$fp = popen("cd $prefix && find -name url", "r");
+		$fp = popen("cd $prefix && find -name $fname", "r");
 		$n = 0;
 		while ($fname = trim(fgets($fp))) {
 			$a = explode('/', $fname);
 			$b = "$a[1]-$a[2]-$a[3]";
 			$c = strtotime($b);
-			if ($c >= strtotime($datestart) && $c <= strtotime($dateend)) {
+			if ($c >= strtotime($_GET[datestart]) && $c <= strtotime($_GET[dateend])) {
 			}
 			$urlfp = fopen("$prefix/$fname", "r");
 			while ($l = fgets($urlfp)) {
@@ -71,6 +79,7 @@
 					$la = preg_split("/\^-+\^/", $l);
 					?>
 					<tr>
+					<td><?= $n ?></td>
 					<td><?= $la[0] ?></td>
 					<td><?= $la[1] ?></td>
 					<td><?= $la[2] ?></td>
