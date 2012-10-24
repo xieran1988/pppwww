@@ -1,12 +1,4 @@
 
-var bro = $.browser;
-if (bro.msie) {
-	if (bro.version != '9.0') {
-//		alert('您的 IE 浏览器版本太低(IE' + bro.version + ')！请使用 IE9 或者 Chrome 浏览器！');
-//		window.location.href = "http://www.baidu.com/s?wd=chrome&rsv_spt=1&issp=1&rsv_bp=0&ie=utf-8&tn=baiduhome_pg";
-	}
-}
-
 $(document).ready(function() {
 	var qry = window.location.search.substr(1);
 	var params = qry.split('&');
@@ -90,7 +82,7 @@ $(document).ready(function() {
 		var w = 1./(rows.length*2);
 		var checks = form.find('input[checked]');
 
-		console.log(checks);
+		//console.log(checks);
 
 		for (var j = 0; j < rows.length; j++) {
 			if (form.find('input[row=' + j + ']').attr('checked')) {
@@ -121,5 +113,9 @@ $(document).ready(function() {
 		graph_create_form($(this));
 	});
 
+	$('[rel=popover]').each(function() {
+		$(this).popover({trigger:'hover'});
+		//console.log($(this));
+	});
 });
 

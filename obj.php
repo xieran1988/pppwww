@@ -113,10 +113,18 @@ function new_user_do(){
 	$new_password = rand(10000000,99999999);
 	//$_GET["node"];
 	//$_GET["speed_id"]
-	$up_speed = val_text("select * from speed where Id=".$_GET["speed_id"],"up_speed");
-	$down_speed = val_text("select * from speed where Id=".$_GET["speed_id"],"down_speed");
-	$lan_speed = val_text("select * from speed where Id=".$_GET["speed_id"],"lan_speed_rx");
 	$speed_id = $_GET["speed_id"];
+	if($speed_id == "-1" || $speed_id == ""){
+		echo "<script type=\"text/javascript\">";
+		echo "alert('没有选择带宽');";
+		//echo "location.href ='?t=login';";
+		echo "</script>";
+		return;
+	}
+	$up_speed = val_text("select * from speed where Id=".$speed_id,"up_speed");
+	$down_speed = val_text("select * from speed where Id=".$speed_id,"down_speed");
+	$lan_speed = val_text("select * from speed where Id=".$speed_id,"lan_speed_rx");
+	
 	$disable_time= date('y-m-d h:m:s', time() + (1 * 24 * 60 * 60));
 	$create_time = date('Y-m-d h:m:s');
 	$worker_name = "admin";
@@ -202,8 +210,8 @@ function uid_entry_form(){
 	    echo "<form id=\"form_new_user\" class='well form-horizontal' method=\"get\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
 		echo "<fieldset>";
 		form_field("姓名", "<input class=input name=\"name\" type=\"text\" value=\"".$row["name"]."\" >");
-		form_field("电话", "<input name=\"phone\" type=\"text\" value=\"".$row["phone"]."\" >");
-		form_field("身份证号", "<input name=\"idcar\" type=\"text\" value=\"".$row["idcar"]."\" >");
+		form_field("电话", "<input name=\"phone\" type=\"text\" value=\"".$row["phone"]."\" onkeypress='return event.keyCode>=48 && event.keyCode<=57 || event.keyCode==45'>");
+		form_field("身份证号", "<input name=\"idcar\" type=\"text\" value=\"".$row["idcar"]."\" onkeypress='return event.keyCode>=48 && event.keyCode<=57 || event.keyCode==120'>");
         form_field("住址", "<input name=\"addr\" type=\"text\" value=\"".$row["addr"]."\" >");
 		$list_num = 0;
 		form_field_header("套餐");
@@ -220,8 +228,8 @@ function uid_entry_form(){
             dro_list("select * from speed", $row["speed_id"], "name", "Id");
 			echo "</select>";
 			form_field_tail();			
-        	form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\"/>".														 "月<input name=\"days\" class=input-mini type=\"text\" value=\"0\" >");
-        	form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\"/>");;
+        	form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\" onkeypress='return event.keyCode>=48 && event.keyCode<=57'/>月<input name=\"days\" class=input-mini type=\"text\" value=\"0\" onkeypress='return event.keyCode>=48 && event.keyCode<=57'>");
+        	form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\" onkeypress='return event.keyCode>=48 && event.keyCode<=57'/>");;
         echo "</div>";
         form_field("备注", "<input name=\"note\" type=\"text\" value=\"业务\" >");
         form_field("", "<button id=\"input_sub\" type=\"submit\" >提交</button>");

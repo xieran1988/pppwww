@@ -1,11 +1,41 @@
 
 <? if ($_GET['t'] == 'netmon') { ?>
 <form class=well>
-从
+<table>
+
+<tr>
+<td>
+关键字:
+</td><td>
+<input name="key" type=\"text\"/>
+</td>
+</tr>
+<tr>
+<td>
+时间:
+</td>
+<td>
 <input name=datestart type=input class=datetime value="<?= date('Y-m-d') ?>">	
 到
 <input name=dateend type=input class=datetime value="<?= date('Y-m-d') ?>">	
+</td>
+</tr>
+<tr>
+<td>
+类型:
+</td>
+<td>
+<select name="type">
+  <option value="1" selected="selected">QQ</option>
+  <option value="55">URL、weibo、E-maill</option>
+</select>
+</td>
+</tr>
+<tr>
+<td></td><td>
 <button type=submit>提交</button>
+</td></tr>
+</table>
 </form>
 <? } ?>
 

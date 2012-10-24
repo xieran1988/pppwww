@@ -4,6 +4,8 @@
 
 <html lang="en">
   <head>
+		<!--    <script type="text/javascript" src="http://fbug.googlecode.com/svn/lite/branches/firebug1.4/content/firebug-lite-dev.js"></script>
+!-->
     <meta charset="utf-8">
     <title> 小区宽带 OA 系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,6 +42,9 @@
   </head>
 
   <body>
+
+	<? //if (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE")) { ?>
+	<? if (1) { ?>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -122,6 +127,10 @@
 
 		<? } ?>
 
+
+	<? } else { 
+		
+	   } // Disable IE ?> 
 
     <!-- Le javascript
     ================================================== -->

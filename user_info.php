@@ -30,8 +30,8 @@ function from_search(){
 	
 	echo "<form class=\"\" method=\"post\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
 	echo "关键字:<input name=\"key\" type=\"text\" value=\"$str_key\"/>";
-	echo " 在线<input type=\"checkbox\" $b_online name=\"online\" value=\"1\">";
-	echo " 到期<input type=\"checkbox\" $b_disable name=\"disable_time\" value=\"1\">";	
+	online_select($req_online);
+	disable_select($req_disable);
 	echo " <input id=\"input_sub\" type=\"submit\" value=\"提交\" />";
 	echo "<input name=\"opt\" type=\"hidden\" value=\"1\" />";
 	echo "</form>";
@@ -49,10 +49,9 @@ function table_user(){
 	if($_REQUEST["page"]) $startCount = $_REQUEST["page"]*$perNumber;
 	$sql_select = "select * from user_pppoe right join user_info on user_pppoe.id = user_info.uid";
 	if($_REQUEST["opt"]){
-		$sql_select =$sql_select." where";
-		if($_REQUEST["online"]) $sql_select =$sql_select." online = 1";
-		else $sql_select =$sql_select." (online is NULL or online !=1)";
-		if($_REQUEST["disable_time"]) $sql_select =$sql_select." and  disable_time < CURRENT_DATE()";
+		if($req_online || $req_disable || $str_key) $sql_select =$sql_select." where ";
+		$online_disable_sql = online_disable($req_online, $req_disable);
+		$sql_select =$sql_select.$online_disable_sql;
 		if($_REQUEST["key"]){
 			$sql_select =$sql_select." and (username like '%".$_REQUEST["key"]."%'";
 			$sql_select =$sql_select." or addr like '%".$_REQUEST["key"]."%'";
@@ -64,13 +63,13 @@ function table_user(){
 		}
 	}
 	if($_GET["uid"]) $sql_select = $sql_select." where uid='".$_GET["uid"]."'";
-	else $sql_select = $sql_select." order by uid desc limit ".$startCount.",".$perNumber;
+	else $sql_select = $sql_select." order by user_pppoe.Id desc limit ".$startCount.",".$perNumber;
 	//echo $sql_select;
 	$dataset = yjwt_mysql_select($sql_select);
 	echo "<table class=\"table table-condensed\">";
 	if($dataset){
 		echo "<tr>";
-		echo "<td><b>序号</b></td>";
+		//echo "<td><b>序号</b></td>";
 		echo "<td><b>UID</b></td>";
 		echo "<td><b>帐户</b></td>";
 		echo "<td><b>在线</b></td>";
@@ -87,12 +86,17 @@ function table_user(){
 	}
 	while($dataset && $row = mysql_fetch_array($dataset)){
 		echo "<tr>";
-		echo "<td>".$num."</td>";
+		//echo "<td>".$num."</td>";
 		echo "<td><a href='".$_SERVER["SCRIPT_NAME"]."?uid=".$row["uid"]."'>".$row["uid"]."</a></td>";
 		echo "<td>".$row["username"]."</td>";
 		//user_online
 		echo "<td>".user_online($row["online"])."</td>";
-		echo "<td>".$row["name"]."</td>";
+		$user_name = $row["name"];
+		$user_addr = $row["addr"];
+		$user_phone = $row["phone"];
+		$str_note = $row["note"];
+		if(!$str_note) $str_note = "无备注信息";
+		echo "<td><div style='float:left;' rel=\"popover\" data-content=\"ADDR:$user_addr<br/>PHON:$user_phone<br/>NOTE:$str_note\" data-original-title=\"联系方式\">$user_name</div></td>";
 		#echo "<td>".$row["addr"]."</td>";
 		#echo "<td>".$row["phone"]."</td>";
 		#echo "<td>".$row["idcar"]."</td>";
@@ -100,7 +104,7 @@ function table_user(){
 		echo "<td>".$row["service_name"]."</td>";
 		echo "<td>".$row["last_ip"]."</td>";
 		echo "<td>".$row["down_speed"]."kbps</td>";
-		echo "<td>".$row["disable_time"]."</td>";
+		echo "<td>".date("Ymd h",strtotime($row["disable_time"]))."</td>";
 		echo "</tr>";
 		$num += 1;
 		if($_GET["uid"]) break;
@@ -130,13 +134,12 @@ function table_user(){
 		echo "<td>".fix_speed($row["lan_speed"])."</td>";
 		echo "<td>".fix_uptime($row["service_ip"])."</td>";
 		echo "</tr>";
-		echo "<table>";
+		echo "</table>";
 		
 		$sql_select = "select * from bill where uid=".$_GET["uid"];
 		$dataset = yjwt_mysql_select($sql_select);
 		if($dataset && $row = mysql_fetch_array($dataset)){
-			echo "<header class=\"jumbotron subhead\" id=\"overview\">";
-			
+			//echo "<header class=\"jumbotron subhead\" id=\"overview\">";
 			echo "<p>交易信息</p>";
 			echo "<table class=\"table table-condensed\">";
 			echo "<tr>";
@@ -160,9 +163,8 @@ function table_user(){
 			echo "<td>".$row["money"]."</td>";
 			echo "<td>".val_text("select name from staff where Id=".$row["admin"],"name")."</td>";
 			echo "<td>".$row["note"]."</td>";
-			
 			echo "</tr>";
-			echo "<table>";
+			echo "</table>";
 		}
 		
 	}

@@ -101,11 +101,9 @@ function rule_ok($ru) {
 function rule_check() {
 	$arr = array('manorg', 'manstaff', 'manprice', 'manband');
 	if (in_array($_GET[t], $arr) && !rule_ok(2)) {
-		?>
-		<div class="alert alert-error">
-			警告：非工作人员请勿进入！
-		</div>
-		<?
+		echo "<div class=\"alert alert-error\">";
+		echo "警告：非工作人员请勿进入!";
+		echo "</div>";
 		return 0;
 	}
 	return 1;
@@ -149,5 +147,67 @@ function btn_edit_del($edit, $del) {
 
 function jmp($url) {
 }
+function online_select($onl){
+	echo "<select name='online'>";
+	if($onl == "0") echo "<option value='0' selected='selected'>所有用户</option>";
+	else echo "<option value='0'>所有用户</option>";
+	
+	if($onl == "1") echo "<option value='1' selected='selected'>在线用户</option>";
+	else echo "<option value='1'>在线用户</option>";
+	
+	if($onl == "2") echo "<option value='2' selected='selected'>离线用户</option>";
+	else echo "<option value='2'>离线用户</option>";
+	
+	if($onl == "3") echo "<option value='3' selected='selected'>未触发用户</option>";
+	else echo "<option value='3'>未触发用户</option>";
+	
+	echo "</select>";
+}
+function disable_select($dis){
+	echo "<select name='disable_time'>";
+	if($dis == "0") echo "<option value='0' selected='selected'>所有用户</option>";
+	else echo "<option value='0' >所有用户</option>";
+	
+	if($dis == "1") echo "<option value='1' selected='selected'>已到期用户</option>";
+	else echo "<option value='1' >已到期用户</option>";
+	if($dis == "2") echo "<option value='2' selected='selected'>未到期用户</option>";
+	else echo "<option value='2'>未到期用户</option>";
+	if($dis == "3") echo "<option value='3' selected='selected'>当月到期用户</option>";
+	else echo "<option value='3'>当月到期用户</option>";
+	if($dis == "4") echo "<option value='4' selected='selected'>下月到期用户</option>";
+	else echo "<option value='4'>下月到期用户</option>";
+	if($dis == "5") echo "<option value='5' selected='selected'>上月到期用户</option>";
+	else echo "<option value='5'>上月到期用户</option>";
+	echo "</select>";
+}
+function online_disable($online, $dis){
+	$sql_where = "";
+	
+	if($dis){
+		if($dis==1) $sql_where ="disable_time < now()";
+		else if($dis==2) $sql_where = "disable_time >= now()";
+		else if($dis==3) $sql_where ="disable_time > date_add(date_add(last_day(now()), interval -1 month),interval 1 day) and disable_time < date_add(last_day(now()), interval 1 day)";
+		else if($dis==4) $sql_where ="disable_time >= date_add(last_day(now()), interval 1 day) and disable_time < date_add(date_add(last_day(now()), interval 1 month), interval 1 day)";
+		else if($dis==5) $sql_where = "disable_time >= date_add(date_add(last_day(now()), interval -2 month),interval 1 day) and disable_time < date_add(date_add(last_day(now()), interval -1 month),interval 1 day)";
+	}
+	if($online){
+		if($sql_where != "") $sql_where = $sql_where." and";
+		if($online == 1) $sql_where = $sql_where." online=1";
+		else if($online == 2) $sql_where = $sql_where." online !=1";
+		else $sql_where = $sql_where." online is NULL";
+	}
+	return $sql_where;
+}
 
+
+/*
+<select name='online'>
+  <option value='1' selected='selected'>gg</option>
+  <option value='55'>55</option>
+</select>
+//身份证
+onkeypress='return event.keyCode>=48 && event.keyCode<=57 || event.keyCode==120'
+//电话
+onkeypress='return event.keyCode>=48 && event.keyCode<=57 || event.keyCode==45'
+*/
 ?>

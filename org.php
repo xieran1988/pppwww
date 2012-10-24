@@ -126,7 +126,7 @@ function get_title(){
 		echo "<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=27\"><button>聚合项目</button></a> ";
 		echo "<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=28\"><button>分离本项目用户</button></a> ";
 		echo "<a href=\"?node=".$sql_row["Id"]."&up_node=".$sql_row["father_node"]."&opt=29\"><button>聚合用户</button></a> ";
-		echo "<a href=\"?\"><button>返回</button></a> ";
+	#	echo "<a href=\"?\"><button>返回</button></a> ";
 		break;
 	}
 }
