@@ -90,6 +90,8 @@
 							<li><a href=?t=getid>获取账号</a></li>
 							<li><a href=?t=putbis>业务录入</a></li>
 							<li><a href=?t=findusr>查找用户信息</a></li>
+							<li class=nav-header>数据导入导出</li>
+							<li><a href=?t=backupusr>用户数据</a></li>
 							<li class=nav-header>业务查询</li>
 							<li><a href=?t=qrybis>业务查询</a></li>
 							<li class=nav-header>系统管理</li>
@@ -109,6 +111,7 @@
 					<? if (rule_check()) { ?>
 					<?php require_once("business_management.php") ?>
 					<?php require_once("business_list.php") ?>
+					<?php require_once("backup.php") ?>
 					<?php require_once("system.php") ?>
 					<?php require_once("org.php") ?>
 					<?php require_once("user_info.php") ?>

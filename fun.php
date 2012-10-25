@@ -182,7 +182,6 @@ function disable_select($dis){
 }
 function online_disable($online, $dis){
 	$sql_where = "";
-	
 	if($dis){
 		if($dis==1) $sql_where ="disable_time < now()";
 		else if($dis==2) $sql_where = "disable_time >= now()";
@@ -198,7 +197,68 @@ function online_disable($online, $dis){
 	}
 	return $sql_where;
 }
+$style_id1="style='background-color:White;border-color:#E7E7FF;border-width:1px;border-style:None;font-size:12px;border-collapse:collapse;'";
+$style_id2="style='color:#F7F7F7; background-color:#4A3C8C;'";
+$style_id3="style='color:#4A3C8C; background-color:#F7F7F7;'";
+$style_id4="style='color:#4A3C8C; background-color:#E7E7FF;'";
 
+
+function bill_statistics_top($s1,$s2){
+	echo "<table width='100%' cellspacing=0 cellpadding=3 border=1 $s1>";
+	echo "<tr $s2>";
+	
+	echo "<td>项</td>";
+	echo "<td>名称</td>";
+	echo "<td>标志</td>";
+	echo "<td>增长</td>";
+	echo "<td>当天</td>";
+	echo "<td>昨天</td>";
+	echo "<td>当月</td>";
+	echo "<td>同时</td>";
+	echo "<td>当月开户</td>";
+	echo "<td>当月续费</td>";
+	echo "<td>上月开户</td>";
+	echo "<td>上月续费</td>";
+	
+	echo "</tr>";
+}
+	
+function bill_statistics($name, $orgid, $style){
+	echo "<tr $style>";
+	$orgname;
+	
+	$cur_day;
+	$last_day;
+	
+	$cur_month;
+	$_last_month;
+	$last_month;
+	
+	$cur_month_new;
+	$cur_month_old;
+	
+	$last_month_new;
+	$last_month_old;
+	
+	echo "<td>$name</td>";
+	echo "<td>$orgname</td>";
+	echo "<td>标志</td>";
+	echo "<td>增长</td>";
+	echo "<td>$cur_day</td>";
+	echo "<td>$last_day</td>";
+	echo "<td>$cur_month</td>";
+	echo "<td>$_last_month/$last_month</td>";
+	echo "<td>$cur_month_new</td>";
+	echo "<td>$cur_month_old</td>";
+	echo "<td>$last_month_new</td>";
+	echo "<td>$last_month_old</td>";
+	
+	echo "</tr>";
+	
+}
+function bill_statistics_bottom(){
+	echo "</table>";
+}
 
 /*
 <select name='online'>

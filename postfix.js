@@ -11,7 +11,7 @@ $(document).ready(function() {
 	}
 	m = 't=' + get['t'];
 
-	//console.log('params:', params);
+	console.log('params:', params);
 	$('#right-pan form').append('<input type=hidden name=t value=' + m.substr(2) + ' >');
 	$('#right-pan form').attr('action', '?' + m);
 	var a = $('#right-pan input[type="submit"]');
@@ -132,5 +132,9 @@ $(document).ready(function() {
 		}
 	});
 
+	$('a[open]').click(function(e) {
+		console.log($(e.target).attr('open'));
+		window.open($(this).attr('open'));
+	});
 });
 

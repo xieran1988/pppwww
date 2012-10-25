@@ -42,14 +42,18 @@ function yjwt_mysql_do($sql_comm){
 		mysql_select_db($GLOBALS[main_db_use], $GLOBALS[main_con]);
 		mysql_query("SET NAMES utf8");
 		$result = mysql_query($sql_comm);
-		if(!result) echo "main sql error:".mysql_error()."<br/>";
+		if(!$result) {
+			echo "main sql error:".mysql_error()."<br/>";
+		}
 	}
 	
 	if ($GLOBALS[sec_db_flag] && $GLOBALS[sec_con]){
 		mysql_select_db($GLOBALS[sec_db_use], $GLOBALS[sec_con]);
 		mysql_query("SET NAMES utf8");
 		$result = mysql_query($sql_comm);
-		if(!result) echo "sec sql error:".mysql_error()."<br/>";
+		if(!$result) {
+			#echo "sec sql error:".mysql_error()."<br/>";
+		}
 	}
 	
 	__yjwt_mysql_close();
