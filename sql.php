@@ -44,6 +44,7 @@ function yjwt_mysql_do($sql_comm){
 		$result = mysql_query($sql_comm);
 		if(!$result) {
 			echo "main sql error:".mysql_error()."<br/>";
+			echo "query:$sql_comm<br/>";
 		}
 	}
 	

@@ -28,7 +28,7 @@ function from_search(){
 	$req_opt = $_REQUEST["opt"];
 	$req_page = $_REQUEST["page"];
 	
-	echo "<form class=\"\" method=\"post\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
+	echo "<form class=\"\" method=\"post\" >";
 	echo "关键字:<input name=\"key\" type=\"text\" value=\"$str_key\"/>";
 	online_select($req_online);
 	disable_select($req_disable);

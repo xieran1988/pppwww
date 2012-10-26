@@ -3,9 +3,11 @@
 if ($_GET[t] != 'backupusr') 
 	return ;
 
-$backup_root = "/tmp/backup/usr";
+$backup_root = "backup/usr";
 chdir($backup_root);
 $pwd = getcwd();
+
+#$sql_fields = "fields enclosed by '\"' terminated by ',' ";
 
 if ($_GET['do'] == 'b') {
 	$date = date('YmdGis');
@@ -15,29 +17,39 @@ if ($_GET['do'] == 'b') {
 	$fp = fopen("$root/time", "w+");
 	fwrite($fp, date('Y-m-d G:i:s'));
 	fclose($fp);
-	$r = yjwt_mysql_do("select * from user_pppoe into outfile '$pwd/$root/file.txt' fields enclosed by '\"' terminated by ',' ;");
+	$note = $_POST[note];
+	$fp = fopen("$root/note", "w+");
+	fwrite($fp, $note);
+	fclose($fp);
+	$r = yjwt_mysql_do("select * from user_pppoe into outfile '$pwd/$root/file.txt' $sql_fields ;");
 	if ($r == 1) {
-		$tips = "<div class='alert alert-success'>备份成功！</div>";
+		$tips = "<div fade=1 class='alert alert-success'>备份成功！</div>";
 	} else {
-		$tips = "<div class='alert alert-error'>备份失败！</div>";
+		$tips = "<div fade=1 class='alert alert-error'>备份失败！</div>";
 	}
 }
 
 if ($_GET['do'] == 'r') {
-#	$r = yjwt_mysql_do("select * from user_pppoe into outfile '$pwd/$root/file.txt' fields enclosed by '\"' terminated by ',' ;");
-	$tips = "<div class='alert alert-success'>恢复成功！</div>";
+	$r = yjwt_mysql_do("delete from user_pppoe;");
+	$r = yjwt_mysql_do("LOAD DATA LOCAL INFILE '$pwd/$_GET[path]/file.txt' into table user_pppoe $sql_fields ;");
+	if ($r == 1) {
+		$tips = "<div fade=1 class='alert alert-success'>恢复成功！</div>";
+	} else {
+		$tips = "<div fade=1 class='alert alert-error'>恢复失败！</div>";
+	}
 }
 
 if ($_GET['do'] == 'd') {
 	if (is_dir($_GET[path])) {
 		system("rm -rf $_GET[path]");
-		$tips = "<div class='alert alert-success'>删除成功！</div>";
+		$tips = "<div fade=1 class='alert alert-success'>删除成功！</div>";
 	}
 }
 
 echo "<form class=form>";
-echo "<input class='input' placeholder='请填写备注'></input> ";
-echo "<a href='?do=b' class='btn btn-primary'>备份</a>";
+echo "<input name=note class='input' placeholder='请填写备注'></input> ";
+echo "<a href='?do=b' class='btn btn-primary'>备份</a> ";
+echo "<a upload='?do=i' class='btn btn-danger'>导入</a>";
 echo "</form>";
 echo "$tips";
 echo "<table class='table table-condesend'>";
@@ -47,7 +59,7 @@ echo "<tr>";
 	echo "<td><b>操作</b></td>";
 echo "</tr>";
 
-foreach (scandir(".") as $dir) {
+foreach (scandir(".", 1) as $dir) {
 	if ($dir == "." || $dir == "..") 
 		continue;
 	$time = file_get_contents("$dir/time");
@@ -58,9 +70,9 @@ foreach (scandir(".") as $dir) {
 	echo "<td>$time</td>";
 	echo "<td>$note</td>";
 	echo "<td>";
-	echo "<a class='btn btn-mini btn-success' open='/tmp/$dir/file.txt' >下载</a> ";
-	echo "<a class='btn btn-mini btn-primary' href='?do=r&path=$dir'>恢复</a> ";
-	echo "<a class='btn-del btn btn-mini btn-danger' href='?do=d&path=$dir'>删除</a> ";
+	echo "<a class='btn btn-mini btn-success' clickopen='raw.php?path=$backup_root/$dir/file.txt&name=$dir' >下载</a> ";
+	echo "<a class='btn btn-mini btn-primary' confirm='警告：将覆盖已有数据，确认恢复？'  href='?do=r&path=$dir'>恢复</a> ";
+	echo "<a class='btn-del btn btn-mini btn-danger' confirm='确定删除？' href='?do=d&path=$dir'>删除</a> ";
 	echo "</td>";
 	echo "</tr>";
 }

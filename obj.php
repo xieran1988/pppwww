@@ -80,7 +80,7 @@ function org_note_head($node_id, $script_opt){
 
 function new_user_form(){
 	$lefte_str = date('Ymd');
-	echo "<form class=well id=\"form_new_user\" method=\"get\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
+	echo "<form class=well id=\"form_new_user\" method=\"get\" >";
 	echo "帐户带宽:";
 	echo "<select name=\"speed_id\">";
 	dro_list("select * from speed", "-1", "name", "Id");
@@ -160,7 +160,7 @@ function new_user_do(){
 	echo '</div>';
 }
 function uid_find_form(){
-    echo "<form class=well id=\"form_new_user\" method=\"get\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
+    echo "<form class=well id=\"form_new_user\" method=\"get\" >";
     echo "<label>帐号：（请输入完整的帐号）</label>";
 		echo "<input class=input name=\"s\" type=\"text\"/><br/>";
     echo "<label>操作：</label>";
@@ -207,7 +207,7 @@ function uid_entry_form(){
 
 			echo "</div>";
 	    //////////////////////////////////////
-	    echo "<form id=\"form_new_user\" class='well form-horizontal' method=\"get\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
+	    echo "<form id=\"form_new_user\" class='well form-horizontal' method=\"get\" >";
 		echo "<fieldset>";
 		form_field("姓名", "<input class=input name=\"name\" type=\"text\" value=\"".$row["name"]."\" >");
 		form_field("电话", "<input name=\"phone\" type=\"text\" value=\"".$row["phone"]."\" onkeypress='return event.keyCode>=48 && event.keyCode<=57 || event.keyCode==45'>");
@@ -242,15 +242,14 @@ function uid_entry_form(){
 		echo "</fieldset>";
         echo "</form>";
 	}else{
-          echo "<script type=\"text/javascript\"> alert('输入的帐户不存在'); ";
-          echo "location.href = '?t=putbis';";
-          echo "</script>";
+		echo "<div class='alert alert-error'>";
+		echo "输入的帐户不存在";
+    echo "</div>";
 	}
 }
+
 function uid_entry(){
-	
-	
-    $uid = $_REQUEST["uid"];
+  $uid = $_REQUEST["uid"];
 	$admin = $_REQUEST["php_user"];
 	$opt_type = $_REQUEST["opt_type"];//1==开户，2=续费, 3=变更
 	$opt_months = $_REQUEST["months"];
@@ -293,19 +292,18 @@ function uid_entry(){
 	if($money == "" || $money == "0") $opt_type = "3";
     $old_t = val_text("select * from user_pppoe where Id=".$uid,"disable_time");
     
-    $sql_update = "update user_pppoe set `disable_time`=now() where `disable_time`<now() and where Id=$uid";
+    $sql_update = "update user_pppoe set disable_time=now() where disable_time < now() and Id=$uid";
     yjwt_mysql_do($sql_update);//修正到期时间
 
     $disable_time = "DATE_ADD(`disable_time`, Interval $opt_months month)";
     $sql_update = "update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
     yjwt_mysql_do($sql_update);
 
-    if($_GET["days"]){
+    if($_GET["days"]) {
        $disable_time = "DATE_ADD(`disable_time`, Interval $opt_days day)";
        $sql_update="update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
        yjwt_mysql_do($sql_update);
      }
-     echo "<br/>";
 	 
     $set_opt = "name='".$_GET["name"]."'";
     $set_opt = $set_opt.", phone='".$_GET["phone"]."'";
@@ -341,9 +339,7 @@ function uid_entry(){
     $sql_update = $sql_update.",'".$uid."')";
     yjwt_mysql_do($sql_update);
 	//echo $sql_update;
-	echo "<script type=\"text/javascript\"> alert('业务办理成功'); </script>";
-	echo "<script type=\"text/javascript\"> window.location.href = '?t=putbis' </script>";
-    
+	echo "<div class='alert alert-success'>业务办理成功！</div>";
     //echo  $sql_update;
 }
 
