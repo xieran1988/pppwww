@@ -32,6 +32,17 @@ $(document).ready(function() {
 			$(this).attr('href', h);
 		}
 	});
+	$('a[upload-post]').click(function() {
+		var url = $(this).attr('upload-post');
+		var file = $('<input type=file name=file> </input>').change(function() {
+			var form = $(this).closest('form').attr('enctype', 'multipart/form-data');
+			form.append($('<input type=hidden>').attr(
+				{name:'do', value:url}
+			));
+			form.submit();
+		});
+		$(this).replaceWith(file);
+	});
 	$('#right-pan > table, #right-pan > div > table').css({'margin-top':'20px'});
 	$('#right-pan a > button').each(function() {
 		//console.log('ab', $(this));

@@ -143,6 +143,7 @@
     <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/jquery.flot.js"></script>
     <script src="js/jquery.flot.time.js"></script>
+    <script src="js/jquery.ocupload-min.js"></script>
     <script src="postfix.js"></script>
 
   </body>

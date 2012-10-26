@@ -46,22 +46,37 @@ if ($_GET['do'] == 'd') {
 	}
 }
 
-echo "<form class=form>";
+if ($_POST['do'] == 'i') {
+	$path = $_FILES[file][tmp_name];
+	$r = yjwt_mysql_do("delete from user_pppoe;");
+	$r = yjwt_mysql_do("LOAD DATA LOCAL INFILE '$path' into table user_pppoe $sql_fields ;");
+	if ($r == 1) {
+		$tips = "<div fade=1 class='alert alert-success'>导入成功！</div>";
+	} else {
+		$tips = "<div fade=1 class='alert alert-error'>导入失败！</div>";
+	}
+}
+
+echo "<form class=form method=post >";
 echo "<input name=note class='input' placeholder='请填写备注'></input> ";
 echo "<a href='?do=b' class='btn btn-primary'>备份</a> ";
-echo "<a upload='?do=i' class='btn btn-danger'>导入</a>";
+echo "<a upload-post='i' class='btn btn-danger'>导入</a>";
 echo "</form>";
 echo "$tips";
+
 echo "<table class='table table-condesend'>";
+
 echo "<tr>";
 	echo "<td><b>备份时间</b></td>";
 	echo "<td><b>备注</b></td>";
 	echo "<td><b>操作</b></td>";
 echo "</tr>";
 
+$n = 0;
 foreach (scandir(".", 1) as $dir) {
 	if ($dir == "." || $dir == "..") 
 		continue;
+	$n++;
 	$time = file_get_contents("$dir/time");
 	$note = file_get_contents("$dir/note");
 	if (!$note)
@@ -75,6 +90,10 @@ foreach (scandir(".", 1) as $dir) {
 	echo "<a class='btn-del btn btn-mini btn-danger' confirm='确定删除？' href='?do=d&path=$dir'>删除</a> ";
 	echo "</td>";
 	echo "</tr>";
+}
+
+if ($n == 0) {
+#	echo "<i>暂时没有备份数据</i>";
 }
 
 echo "</table>";
