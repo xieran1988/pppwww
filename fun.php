@@ -142,13 +142,13 @@ function form_field($desc, $input) {
 
 function btn_edit_del($edit, $del) {
 	echo "<a href='$edit'><button class='btn-mini btn-primary'>编辑</button></a>";
-	echo "<a href='$del'><button class='btn-mini btn-danger btn-del'>删除</button></a>";
+	echo " <a href='$del'><button class='btn-mini btn-danger btn-del'>删除</button></a>";
 }
 
 function jmp($url) {
 }
 function online_select($onl){
-	echo "<select name='online'>";
+	echo " <select name='online'>";
 	if($onl == "0") echo "<option value='0' selected='selected'>所有用户</option>";
 	else echo "<option value='0'>所有用户</option>";
 	
@@ -164,7 +164,7 @@ function online_select($onl){
 	echo "</select>";
 }
 function disable_select($dis){
-	echo "<select name='disable_time'>";
+	echo " <select name='disable_time'>";
 	if($dis == "0") echo "<option value='0' selected='selected'>所有用户</option>";
 	else echo "<option value='0' >所有用户</option>";
 	

@@ -35,6 +35,10 @@
 			#qrybis_form span {
 				
 			}
+			.search select {
+				width: 110px;
+				margin: 0px;
+			}
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/datepicker.css" rel="stylesheet">

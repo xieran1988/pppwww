@@ -28,11 +28,11 @@ function from_search(){
 	$req_opt = $_REQUEST["opt"];
 	$req_page = $_REQUEST["page"];
 	
-	echo "<form class=\"\" method=\"post\" >";
-	echo "关键字:<input name=\"key\" type=\"text\" value=\"$str_key\"/>";
+	echo "<form class='form well search' method=\"post\" >";
+	echo "<input class=input placeholder='用户名,身份证号,IP,MAC ...' name=key value='$str_key'/>";
 	online_select($req_online);
 	disable_select($req_disable);
-	echo " <input id=\"input_sub\" type=\"submit\" value=\"提交\" />";
+	echo " <a class='btn btn-primary' type=submit >查找</a>";
 	echo "<input name=\"opt\" type=\"hidden\" value=\"1\" />";
 	echo "</form>";
 }
@@ -56,7 +56,8 @@ function table_user() {
 			$a = array("name", "idcar", "username", "addr", "phone");
 			if (stripos($str_key, ".") > 1) $a[] = "last_ip";
 			if (strlen($str_key == 23)) $a[] = "mac";
-			$where[] = join(" or ", (array_map(function($k) use($str_key) { return "$k like '%$str_key%'";}, $a)));
+			$where[] = "(" . join(" or ", (array_map(
+				function($k) use($str_key) { return "$k like '%$str_key%'";}, $a))) . ")";
 		}
 	}
 	if($_GET["uid"]) $where[] = "uid='$_GET[uid]'";
@@ -65,6 +66,7 @@ function table_user() {
 	}
 	if (!$_GET[uid])
 		$sql_select = $sql_select." order by user_pppoe.Id desc limit ".$startCount.",".$perNumber;
+#	echo $sql_select;
 	$dataset = yjwt_mysql_select($sql_select);
 	echo "<table class=\"table table-condensed\">";
 	if($dataset){
