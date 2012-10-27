@@ -17,6 +17,7 @@ function fix_uptime($fix){
 	if($fix) return $fix;
 	else return "从未上线";
 }
+
 function from_search(){
 	$str_key = $_REQUEST["key"];
 	$req_online = $_REQUEST["online"];
@@ -28,11 +29,15 @@ function from_search(){
 	$req_opt = $_REQUEST["opt"];
 	$req_page = $_REQUEST["page"];
 	
+	#var_dump($_REQUEST);
 	echo "<form class='form well search' method=\"post\" >";
 	echo "<input class=input placeholder='用户名,身份证号,IP,MAC ...' name=key value='$str_key'/>";
 	online_select($req_online);
 	disable_select($req_disable);
-	echo " <a class='btn btn-primary' type=submit >查找</a>";
+	echo " <select name=org >";
+		dro_list("select * from org", $_POST[org], "name", "Id");
+	echo "</select>";
+	echo " <button class='btn btn-primary' type=submit >查找</button>";
 	echo "<input name=\"opt\" type=\"hidden\" value=\"1\" />";
 	echo "</form>";
 }
@@ -48,12 +53,16 @@ function table_user() {
 	$req_page = $_REQUEST["page"];
 	
 	if($_REQUEST["page"]) $startCount = $_REQUEST["page"]*$perNumber;
-	$sql_select = "select * from user_pppoe right join user_info on user_pppoe.id = user_info.uid";
+	$sql_select = "select *, user_info.name as info_name ".
+								"from user_pppoe inner join user_info ".
+								"on user_pppoe.id = user_info.uid ";
 	$where = array();
+	if ($_POST[org] != '-1' && $_POST[org] != '') 
+		$where[] = "orgid = '$_POST[org]'";
 	if($_REQUEST["opt"]) {
 		$where = online_disable($where, $req_online, $req_disable);
 		if ($str_key) {
-			$a = array("name", "idcar", "username", "addr", "phone");
+			$a = array("user_info.name", "idcar", "username", "addr", "phone");
 			if (stripos($str_key, ".") > 1) $a[] = "last_ip";
 			if (strlen($str_key == 23)) $a[] = "mac";
 			$where[] = "(" . join(" or ", (array_map(
@@ -66,7 +75,7 @@ function table_user() {
 	}
 	if (!$_GET[uid])
 		$sql_select = $sql_select." order by user_pppoe.Id desc limit ".$startCount.",".$perNumber;
-#	echo $sql_select;
+	#echo $sql_select;
 	$dataset = yjwt_mysql_select($sql_select);
 	echo "<table class=\"table table-condensed\">";
 	if($dataset){
@@ -79,11 +88,11 @@ function table_user() {
 		#echo "<td><b>地址</b></td>";
 		#echo "<td><b>电话</b></td>";
 		#echo "<td><b>证件号</b></td>";
-		echo "<td><b>MAC</b></td>";
-		echo "<td><b>服务器名称</b></td>";
 		echo "<td><b>IP</b></td>";
 		echo "<td><b>带宽</b></td>";
 		echo "<td><b>到期时间</b></td>";
+		#echo "<td><b>MAC</b></td>";
+		#echo "<td><b>服务器名称</b></td>";
 		echo "</tr>";
 	}
 	while($dataset && $row = mysql_fetch_array($dataset)){
@@ -93,23 +102,23 @@ function table_user() {
 		echo "<td>".$row["username"]."</td>";
 		//user_online
 		echo "<td>".user_online($row["online"])."</td>";
-		$user_name = $row["name"];
+		$user_name = $row["info_name"];
 		$user_addr = $row["addr"];
 		$user_phone = $row["phone"];
 		$str_note = $row["note"];
 		
 		if(!$str_note) $str_note = "无备注信息";
 		$id_car = $row["idcar"];
-		$uinfo = "ADDR:$user_addr<br/>PHON:$user_phone<br/>IDEN:$id_car<br/>NOTE:$str_note";
+		$uinfo = "地址:$user_addr<br/>电话:$user_phone<br/>身份证:$id_car<br/>备注:$str_note";
 		echo "<td><div style='float:left;' rel=\"popover\" data-content=\"$uinfo\" data-original-title=\"联系方式\">$user_name</div></td>";
 		#echo "<td>".$row["addr"]."</td>";
 		#echo "<td>".$row["phone"]."</td>";
 		#echo "<td>".$row["idcar"]."</td>";
-		echo "<td>".$row["mac"]."</td>";
-		echo "<td>".$row["service_name"]."</td>";
 		echo "<td>".$row["last_ip"]."</td>";
 		echo "<td>".$row["down_speed"]."kbps</td>";
 		echo "<td>".date("Ymd h",strtotime($row["disable_time"]))."</td>";
+		#echo "<td>".$row["mac"]."</td>";
+		#echo "<td>".$row["service_name"]."</td>";
 		echo "</tr>";
 		$num += 1;
 		if($_GET["uid"]) break;

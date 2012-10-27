@@ -33,6 +33,7 @@ function dro_list($sql_select, $default_vaule, $text_name, $vaule_name){
 		else echo "<option value=\"".$row[$vaule_name]."\">".$row[$text_name]."</option>";
 	}
 }
+
 function val_text($sql_select, $text_name){
 	$dataset = yjwt_mysql_select($sql_select);
 	if(!$dataset) return "ERROR";
@@ -147,6 +148,7 @@ function btn_edit_del($edit, $del) {
 
 function jmp($url) {
 }
+
 function online_select($onl){
 	echo " <select name='online'>";
 	if($onl == "0") echo "<option value='0' selected='selected'>所有用户</option>";
@@ -163,6 +165,7 @@ function online_select($onl){
 	
 	echo "</select>";
 }
+
 function disable_select($dis){
 	echo " <select name='disable_time'>";
 	if($dis == "0") echo "<option value='0' selected='selected'>所有用户</option>";

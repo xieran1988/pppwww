@@ -1,6 +1,6 @@
 <?
 
-if ($_GET[t] != 'backupusr') 
+if ($_GET[t] != 'backupusr')
 	return ;
 
 $backup_root = "backup/usr";

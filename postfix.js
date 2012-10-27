@@ -61,16 +61,22 @@ $(document).ready(function() {
 	$('.datetime').datepicker({
 		format: 'yyyy-mm-dd'
 	});
-	$('#tc_select').change(function() {
-		if ($('#tc_select').val() == -2) {
-			$('#opt_menu').show();
-		} else {
-			$('#opt_menu').hide();
+
+	function show_when_select(select_id, menu_id) {
+		$(select_id).change(function() {
+			if ($(select_id).val() == 'man') {
+				$(menu_id).show();
+			} else {
+				$(menu_id).hide();
+			}
+		});
+		if ($(select_id).val() == 'man') {
+			$(menu_id).show();
 		}
-	});
-	if ($('#tc_select').val() == -2) {
-		$('#opt_menu').show();
 	}
+
+	show_when_select('#tc_select', '#opt_menu');
+	show_when_select('#speed_select', '#div_speed');
 
 	function graph_create_form(div) {
 		var form = div.find('.graph-form');

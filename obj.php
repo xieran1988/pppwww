@@ -24,7 +24,7 @@ function get_tc_list($orgmap, $speed){
 			if($list_num > 0) break;
 		} else break;
 	}
-	echo "<option value=\"-2\">手工录入</option>";
+	echo "<option value='man'>手工录入</option>";
 	return $list_num;
 }
 function business_form(){
@@ -148,9 +148,9 @@ function new_user_do(){
 
 	echo '<div class=well>';
 	echo "<p>账号：".$new_username."<p/>";
-	echo "<p>密码：".$new_password." bps<p/>";
-	echo "<p>上行带宽：".$up_speed." bps<p/>";
-	echo "<p>下行带宽：".$down_speed." bps<p/>";
+	echo "<p>密码：".$new_password." <p/>";
+	echo "<p>上行带宽：".$up_speed." Kbps<p/>";
+	echo "<p>下行带宽：".$down_speed." Kbps<p/>";
 	echo "<p>网内带宽：".$lan_speed."【只当有网内带宽时有效】<p/>";
 	echo "<p>创建时间：".$create_time."<p/>";
 	echo "<p>初始到期时间：".$disable_time."<p/>";
@@ -226,23 +226,38 @@ function uid_entry_form() {
 			form_field("固定IP", "<input name=\"ip\" type=\"text\" value=\"".$row["ip_address"]."\" >");
 			form_field("密码", "<input name=\"password\" type=\"text\" value=\"".$row["password"]."\" >");
 			form_field_header("带宽");
-			echo "<select name=\"speed_id\">";
-            dro_list("select * from speed", $row["speed_id"], "name", "Id");
+			echo "<select id=speed_select name=speed_id >";
+        dro_list("select * from speed", $row["speed_id"], "name", "Id");
+				echo "<option value='man' selected>自定义</option>";
 			echo "</select>";
-			form_field_tail();			
-        	form_field("时长", "<input name=\"months\" class=input-mini type=\"text\" value=\"0\" onkeypress='return event.keyCode>=48 && event.keyCode<=57'/>月<input name=\"days\" class=input-mini type=\"text\" value=\"0\" onkeypress='return event.keyCode>=48 && event.keyCode<=57'>");
-        	form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\" onkeypress='return event.keyCode>=48 && event.keyCode<=57'/>");;
-        echo "</div>";
-        form_field("备注", "<input name=\"note\" type=\"text\" value=\"业务\" >");
-        form_field("", "<button id=\"input_sub\" type=\"submit\" >提交</button>");
+			form_field_tail();
+			echo "<div id=div_speed style='display:none'>";
+			form_field("带宽上行", "<input name=upband class=input-mini type=text value='$row[up_speed]'> </input> Kbps");
+			form_field("带宽下行", "<input name=downband class=input-mini type=text value='$row[down_speed]'> </input> Kbps");
+			echo "</div>";
+			form_field("到期时间", "<input name=disable_time class=datetime type=text value='$row[disable_time]'></input>");
+			/*
+			form_field("时长", 
+				"<input name=months class=input-mini type=\"text\" value=\"0\" ".
+				"onkeypress='return event.keyCode>=48 && event.keyCode<=57'/> 月 ".
+				"<input name=days class=input-mini type=\"text\" value=\"0\" ".
+				"onkeypress='return event.keyCode>=48 && event.keyCode<=57'> 日 "
+			);
+			 */
+      form_field("金额", "<input name=\" money\" type=\"text\" value=\"0\" onkeypress='return event.keyCode>=48 && event.keyCode<=57'/>");;
+    echo "</div>";
 
-        echo "<input name=\"opt\" type=\"hidden\" value=\"3\" />";
+    form_field("备注", "<input name=\"note\" type=\"text\" value=\"业务\" >");
+    form_field("", "<button id=\"input_sub\" type=\"submit\" >提交</button>");
+
+    echo "<input name=\"opt\" type=\"hidden\" value=\"3\" />";
 		echo "<input name=\"opt_type\" type=\"hidden\" value=\"$opt_type\" />";
-        echo "<input name=\"uid\" type=\"hidden\" value=\"".$row["uid"]."\" />";
-        echo "<input name=\"orgmap\" type=\"hidden\" value=\"".$row["orgmap"]."\" />";
-        echo "<input name=\"orgid\" type=\"hidden\" value=\"".$row["orgid"]."\" />";
+    echo "<input name=\"uid\" type=\"hidden\" value=\"".$row["uid"]."\" />";
+    echo "<input name=\"orgmap\" type=\"hidden\" value=\"".$row["orgmap"]."\" />";
+    echo "<input name=\"orgid\" type=\"hidden\" value=\"".$row["orgid"]."\" />";
 		echo "</fieldset>";
-        echo "</form>";
+    echo "</form>";
+
 	}else{
 		echo "<div class='alert alert-error'>";
 		echo "输入的帐户不存在";
@@ -301,11 +316,17 @@ function uid_entry(){
     $sql_update = "update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
     yjwt_mysql_do($sql_update);
 
+		if ($_GET[disable_time]) {
+		   $disable_time = "$_GET[disable_time]";
+       $sql_update="update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
+       yjwt_mysql_do($sql_update);
+		}
+
     if($_GET["days"]) {
        $disable_time = "DATE_ADD(`disable_time`, Interval $opt_days day)";
        $sql_update="update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
        yjwt_mysql_do($sql_update);
-     }
+    }
 	 
     $set_opt = "name='".$_GET["name"]."'";
     $set_opt = $set_opt.", phone='".$_GET["phone"]."'";
