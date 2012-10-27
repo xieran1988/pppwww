@@ -180,22 +180,29 @@ function disable_select($dis){
 	else echo "<option value='5'>上月到期用户</option>";
 	echo "</select>";
 }
-function online_disable($online, $dis){
-	$sql_where = "";
+function online_disable($r, $online, $dis){
 	if($dis){
-		if($dis==1) $sql_where ="disable_time < now()";
-		else if($dis==2) $sql_where = "disable_time >= now()";
-		else if($dis==3) $sql_where ="disable_time > date_add(date_add(last_day(now()), interval -1 month),interval 1 day) and disable_time < date_add(last_day(now()), interval 1 day)";
-		else if($dis==4) $sql_where ="disable_time >= date_add(last_day(now()), interval 1 day) and disable_time < date_add(date_add(last_day(now()), interval 1 month), interval 1 day)";
-		else if($dis==5) $sql_where = "disable_time >= date_add(date_add(last_day(now()), interval -2 month),interval 1 day) and disable_time < date_add(date_add(last_day(now()), interval -1 month),interval 1 day)";
+		if($dis==1) array_push($r, "disable_time < now()");
+		else if($dis==2) array_push($r, "disable_time >= now()");
+		else if($dis==3) array_push($r, 
+			"disable_time > date_add(date_add(last_day(now()), interval -1 month), interval 1 day)", 
+			"disable_time < date_add(last_day(now()), interval 1 day)"
+		);
+		else if($dis==4) array_push($r, 
+			"disable_time >= date_add(last_day(now()), interval 1 day)",
+			"disable_time < date_add(date_add(last_day(now()), interval 1 month), interval 1 day)"
+		);
+		else if($dis==5) array_push($r,
+			"disable_time >= date_add(date_add(last_day(now()), interval -2 month),interval 1 day)",
+			"disable_time < date_add(date_add(last_day(now()), interval -1 month),interval 1 day)"
+		);
 	}
 	if($online){
-		if($sql_where != "") $sql_where = $sql_where." and";
-		if($online == 1) $sql_where = $sql_where." online=1";
-		else if($online == 2) $sql_where = $sql_where." online !=1";
-		else $sql_where = $sql_where." online is NULL";
+		if($online == 1) array_push($r, "online=1");
+		else if($online == 2) array_push($r, "online !=1");
+		else array_push($r, "online is NULL");
 	}
-	return $sql_where;
+	return $r;
 }
 $style_id1="style='background-color:White;border-color:#E7E7FF;border-width:1px;border-style:None;font-size:12px;border-collapse:collapse;'";
 $style_id2="style='color:#F7F7F7; background-color:#4A3C8C;'";

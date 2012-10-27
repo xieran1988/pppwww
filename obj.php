@@ -2,7 +2,8 @@
 require_once("fun.php");
 function get_tc_list($orgmap, $speed){
 	$list_num = 0;
-	while(1){
+#	echo "orgmap=$orgmap;" . strrpos($orgmap, ".");
+	while ($orgmap) {
 		$pos = strrpos($orgmap, ".");
 		if($pos >= 0){
 			$node_id = substr($orgmap, $pos + 1);
@@ -21,7 +22,7 @@ function get_tc_list($orgmap, $speed){
 				}
 			}
 			if($list_num > 0) break;
-		}else break;
+		} else break;
 	}
 	echo "<option value=\"-2\">手工录入</option>";
 	return $list_num;
@@ -170,11 +171,12 @@ function uid_find_form(){
     echo "</form>";
 }
 
-function uid_entry_form(){
+function uid_entry_form() {
 
-    $sql_select = "select user_pppoe.*, user_info.* from user_pppoe, user_info where user_pppoe.Id = user_info.uid ";
-    $sql_select = $sql_select." and user_pppoe.username = '".$_GET["s"]."'";
-    $dataset = yjwt_mysql_select($sql_select);
+	$sql_select = "select p.*, i.* from user_pppoe as p join user_info as i where p.Id = i.uid and p.username = '$_GET[s]'";
+#	$sql_select = "select * from user_pppoe as p where p.username = '$_GET[s]'";
+
+	$dataset = yjwt_mysql_select($sql_select);
 	$opt_type = 1;
 	if($row = mysql_fetch_array($dataset)){
 		echo "<div class=well>";

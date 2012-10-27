@@ -36,8 +36,9 @@ function from_search(){
 	echo "<input name=\"opt\" type=\"hidden\" value=\"1\" />";
 	echo "</form>";
 }
-function table_user(){
-    $startCount = 0;
+
+function table_user() {
+  $startCount = 0;
 	$perNumber = 10;
 	$num = 0;
 	$str_key = $_REQUEST["key"];
@@ -48,23 +49,22 @@ function table_user(){
 	
 	if($_REQUEST["page"]) $startCount = $_REQUEST["page"]*$perNumber;
 	$sql_select = "select * from user_pppoe right join user_info on user_pppoe.id = user_info.uid";
-	if($_REQUEST["opt"]){
-		if($req_online || $req_disable || $str_key) $sql_select =$sql_select." where ";
-		$online_disable_sql = online_disable($req_online, $req_disable);
-		$sql_select =$sql_select.$online_disable_sql;
-		if($_REQUEST["key"]){
-			$sql_select =$sql_select." and (username like '%".$_REQUEST["key"]."%'";
-			$sql_select =$sql_select." or addr like '%".$_REQUEST["key"]."%'";
-			$sql_select =$sql_select." or name like '%".$_REQUEST["key"]."%'";
-			$sql_select =$sql_select." or idcar like '%".$_REQUEST["key"]."%'";
-			if(stripos($_REQUEST["key"], ".")> 1) $sql_select =$sql_select." or last_ip like '%".$_REQUEST["key"]."%'";
-			if(strlen($_REQUEST["key"]) == 23) $sql_select =$sql_select." or mac like '%".$_REQUEST["key"]."%'";
-			$sql_select =$sql_select." or phone like '%".$_REQUEST["key"]."%')";
+	$where = array();
+	if($_REQUEST["opt"]) {
+		$where = online_disable($where, $req_online, $req_disable);
+		if ($str_key) {
+			$a = array("name", "idcar", "username", "addr", "phone");
+			if (stripos($str_key, ".") > 1) $a[] = "last_ip";
+			if (strlen($str_key == 23)) $a[] = "mac";
+			$where[] = join(" or ", (array_map(function($k) use($str_key) { return "$k like '%$str_key%'";}, $a)));
 		}
 	}
-	if($_GET["uid"]) $sql_select = $sql_select." where uid='".$_GET["uid"]."'";
-	else $sql_select = $sql_select." order by user_pppoe.Id desc limit ".$startCount.",".$perNumber;
-	//echo $sql_select;
+	if($_GET["uid"]) $where[] = "uid='$_GET[uid]'";
+	if (count($where)) {
+		$sql_select .= " where " . join(" and ", $where);
+	}
+	if (!$_GET[uid])
+		$sql_select = $sql_select." order by user_pppoe.Id desc limit ".$startCount.",".$perNumber;
 	$dataset = yjwt_mysql_select($sql_select);
 	echo "<table class=\"table table-condensed\">";
 	if($dataset){
