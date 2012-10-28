@@ -18,7 +18,7 @@ function fix_uptime($fix){
 	else return "从未上线";
 }
 
-function from_search(){
+function from_search() {
 	$str_key = $_REQUEST["key"];
 	$req_online = $_REQUEST["online"];
 	if($req_online) $b_online = "checked=true";
@@ -31,7 +31,8 @@ function from_search(){
 	
 	#var_dump($_REQUEST);
 	echo "<form class='form well search' method=\"post\" >";
-	echo "<input class=input placeholder='用户名,身份证号,IP,MAC ...' name=key value='$str_key'/>";
+	echo "<input type=text class='input large' ";
+	echo "	placeholder='用户名,身份证号,IP,MAC,地址,小区名称 ...' name=key value='$str_key'/>";
 	online_select($req_online);
 	disable_select($req_disable);
 	echo " <select name=org >";
@@ -51,15 +52,15 @@ function table_user() {
 	$req_disable = $_REQUEST["disable_time"];
 	$req_opt = $_REQUEST["opt"];
 	$req_page = $_REQUEST["page"];
-	
-	if($_REQUEST["page"]) $startCount = $_REQUEST["page"]*$perNumber;
+
+	if ($_REQUEST["page"]) $startCount = $_REQUEST["page"]*$perNumber;
 	$sql_select = "select *, user_info.name as info_name ".
 								"from user_pppoe inner join user_info ".
 								"on user_pppoe.id = user_info.uid ";
 	$where = array();
 	if ($_POST[org] != '-1' && $_POST[org] != '') 
 		$where[] = "orgid = '$_POST[org]'";
-	if($_REQUEST["opt"]) {
+	if ($_REQUEST["opt"]) {
 		$where = online_disable($where, $req_online, $req_disable);
 		if ($str_key) {
 			$a = array("user_info.name", "idcar", "username", "addr", "phone");
@@ -69,7 +70,15 @@ function table_user() {
 				function($k) use($str_key) { return "$k like '%$str_key%'";}, $a))) . ")";
 		}
 	}
-	if($_GET["uid"]) $where[] = "uid='$_GET[uid]'";
+	if ($str_key) {
+		$dataset = yjwt_mysql_select("select Id from org where name = '$str_key'");
+		$row = mysql_fetch_array($dataset);
+		if ($row[Id]) {
+			$where[] = "orgid = $row[Id]";
+		}
+	}
+	if ($_GET["uid"]) 
+		$where[] = "uid='$_GET[uid]'";
 	if (count($where)) {
 		$sql_select .= " where " . join(" and ", $where);
 	}

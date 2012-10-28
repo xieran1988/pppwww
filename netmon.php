@@ -1,5 +1,9 @@
 
-<? if ($_GET['t'] == 'netmon') { ?>
+<? 
+if ($_GET['t'] != 'netmon')
+	return ;
+?>
+
 <form class=well method=get action="?">
 <table>
 
@@ -37,7 +41,6 @@
 </td></tr>
 </table>
 </form>
-<? } ?>
 
 <?
 //	error_reporting(E_ALL);
@@ -89,7 +92,6 @@
 				$n++;
 			}
 		}
-		
-		?></table><?
 	}
+	?></table><?
 ?>

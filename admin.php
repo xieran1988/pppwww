@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+<?php require_once("/etc/cfg.php") ?>
 <?php require_once("fun.php") ?>
 
 <html lang="en">
@@ -37,6 +38,12 @@
 			}
 			.search select {
 				width: 110px;
+				margin: 0px;
+			}
+			.large {
+				width: 300px;
+			}
+			.search input {
 				margin: 0px;
 			}
     </style>

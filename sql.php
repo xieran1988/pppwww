@@ -1,5 +1,7 @@
-<?php require_once("conn.php"); ?>
 <?php
+
+require_once('/etc/cfg.php');
+
 $main_con;
 $sec_con;
 function __yjwt_mysql_conn(){

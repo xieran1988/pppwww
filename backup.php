@@ -57,8 +57,8 @@ if ($_POST['do'] == 'i') {
 	}
 }
 
-echo "<form class=form method=post >";
-echo "<input name=note class='input' placeholder='请填写备注'></input> ";
+echo "<form class='form search' method=post >";
+echo "<input name=note type=text class='input' placeholder='请填写备注'></input> ";
 echo "<a href='?do=b' class='btn btn-primary'>备份</a> ";
 echo "<a upload-post='i' class='btn btn-danger'>导入</a>";
 echo "</form>";

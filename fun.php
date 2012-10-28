@@ -224,7 +224,7 @@ function bill_statistics_top($s1,$s2){
 	echo "<td>当天</td>";
 	echo "<td>昨天</td>";
 	echo "<td>当月</td>";
-	echo "<td>同时</td>";
+	echo "<td>同期</td>";
 	echo "<td>当月开户</td>";
 	echo "<td>当月续费</td>";
 	echo "<td>上月开户</td>";
@@ -232,17 +232,22 @@ function bill_statistics_top($s1,$s2){
 	
 	echo "</tr>";
 }
-	
+function bill_stati($s,$e){
+	$t = "select sum(money) as number from bill where opt_time>='$s' and opt_time<'$e'";
+	echo $t."<br/>";
+	return val_text($t, "number");
+}	
 function bill_statistics($name, $orgid, $style){
 	echo "<tr $style>";
 	$orgname;
+	$d=strtotime('-1 days');
+	$cur_day=bill_stati(date("Y-m-d"), date("Y-m-d H:i:s"));
+	$last_day=bill_stati(date("Y-m-d",$d), date("Y-m-d"));
 	
-	$cur_day;
-	$last_day;
-	
-	$cur_month;
-	$_last_month;
-	$last_month;
+	$d=strtotime('-1 months');
+	$cur_month=bill_stati(date("Y-m-1"), date("Y-m-d H:i:s"));
+	$_last_month=bill_stati(date("Y-m-1",$d), date("Y-m-d H:i:s", $d));
+	$last_month=bill_stati(date("Y-m-1",$d), date("Y-m-1"));
 	
 	$cur_month_new;
 	$cur_month_old;
@@ -269,7 +274,7 @@ function bill_statistics($name, $orgid, $style){
 function bill_statistics_bottom(){
 	echo "</table>";
 }
-
+//date_add(last_day(now()), interval -1 month)
 /*
 <select name='online'>
   <option value='1' selected='selected'>gg</option>

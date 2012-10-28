@@ -9,7 +9,7 @@
    		if($_REQUEST["s"]) $s_time = $_REQUEST["s"];
    		if($_REQUEST["e"]) $e_time = $_REQUEST["e"];
    		
-      echo "<form id=qrybis_form class=\"well\" method=\"get\" >";
+      echo "<form id=qrybis_form class='well search' method=\"get\" >";
       
       echo "<input name=\"t\" type=\"hidden\" value=\"findusr\"/>";
 			echo "<table>";
