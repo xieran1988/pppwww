@@ -101,8 +101,6 @@
 							<li><a href=?t=getid>获取账号</a></li>
 							<li><a href=?t=putbis>业务录入</a></li>
 							<li><a href=?t=findusr>查找用户信息</a></li>
-							<li class=nav-header>数据导入导出</li>
-							<li><a href=?t=backupusr>用户数据</a></li>
 							<li class=nav-header>业务查询</li>
 							<li><a href=?t=qrybis>业务查询</a></li>
 							<li class=nav-header>系统管理</li>
@@ -112,6 +110,8 @@
 							<li><a href=?t=modpass>修改密码</a></li>
 							<li class=nav-header>项目管理</li>
 							<li><a href=?t=manorg>项目管理</a></li>
+							<li class=nav-header>数据导入导出</li>
+							<li><a href=?t=backupusr>用户数据</a></li>
 							<li class=nav-header>网监</li>
 							<li><a href=?t=netmon>网监</a></li>
             </ul>

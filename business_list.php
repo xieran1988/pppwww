@@ -51,6 +51,7 @@
       $sql_select = $sql_select." and opt_time>='".$_GET["s"]."' and opt_time<='".$_GET["e"]."'";
       if($str_key) $sql_select = $sql_select." and (user_info.uid='$str_key' or org.name='$str_key' or user_info.name='$str_key' or user_info.addr like '%$str_key%')";
       //echo $sql_select;order by
+      echo $sql_select;
 	  $sql_select = $sql_select." order by opt_time desc";
 	  $sql_select = $sql_select." limit ".$startCount.",".$perNumber;
       $dataset = yjwt_mysql_select($sql_select);

@@ -232,33 +232,49 @@ function bill_statistics_top($s1,$s2){
 	
 	echo "</tr>";
 }
-function bill_stati($s,$e){
-	$t = "select sum(money) as number from bill where opt_time>='$s' and opt_time<'$e'";
-	echo $t."<br/>";
-	return val_text($t, "number");
+function bill_stati($s, $e, $orgid, $opt_type){
+	$s = "select sum(money) as number from bill where opt_time>='$s' and opt_time<'$e'";
+	if($orgid != -1) $s=$s." and (orgid=$orgid or orgmap like '.$orgid.')";
+	if($bill_type != "") $s=$s." and opt_type=$opt_type";
+	
+	//echo $s."<br/>";
+	$v = val_text($s, "number");
+	if(!$v) return "NULL";
+	else return $v;
+	//return val_text($s, "number");
 }	
 function bill_statistics($name, $orgid, $style){
 	echo "<tr $style>";
 	$orgname;
+	if($orgid == -1) $orgname ="";
+	else val_text("select * from org where Id =$orgid ", "name");
+	
 	$d=strtotime('-1 days');
-	$cur_day=bill_stati(date("Y-m-d"), date("Y-m-d H:i:s"));
-	$last_day=bill_stati(date("Y-m-d",$d), date("Y-m-d"));
+	$cur_day=bill_stati(date("Y-m-d"), date("Y-m-d H:i:s"), $orgid, "");
+	$last_day=bill_stati(date("Y-m-d",$d), date("Y-m-d"), $orgid, "");
 	
 	$d=strtotime('-1 months');
-	$cur_month=bill_stati(date("Y-m-1"), date("Y-m-d H:i:s"));
-	$_last_month=bill_stati(date("Y-m-1",$d), date("Y-m-d H:i:s", $d));
-	$last_month=bill_stati(date("Y-m-1",$d), date("Y-m-1"));
+	$cur_month=bill_stati(date("Y-m-1"), date("Y-m-d H:i:s"), $orgid, "");
+	$_last_month=bill_stati(date("Y-m-1",$d), date("Y-m-d H:i:s", $d), $orgid, "");
+	$last_month=bill_stati(date("Y-m-1",$d), date("Y-m-1"), $orgid, "");
 	
-	$cur_month_new;
-	$cur_month_old;
+	$cur_month_new=bill_stati(date("Y-m-1"), date("Y-m-d H:i:s"), $orgid, "1");
+	$cur_month_old=bill_stati(date("Y-m-1"), date("Y-m-d H:i:s"), $orgid, "2");
 	
-	$last_month_new;
-	$last_month_old;
+	$last_month_new=bill_stati(date("Y-m-1",$d), date("Y-m-1"), $orgid, "1");
+	$last_month_old=bill_stati(date("Y-m-1",$d), date("Y-m-1"), $orgid, "2");
+	
+	
+	$growth = $cur_month - $_last_month;
+	$flag;//Reduction
+	if($growth > 0) $flag = "<font color=\"red\">growth</font>";
+	else if($growth == 0) $flag = "<font color=\"black\">Equal</font>";
+	else $flag = "<font color=\"blue\">Reduction</font>";
 	
 	echo "<td>$name</td>";
 	echo "<td>$orgname</td>";
-	echo "<td>标志</td>";
-	echo "<td>增长</td>";
+	echo "<td>$flag</td>";
+	echo "<td>$growth</td>";
 	echo "<td>$cur_day</td>";
 	echo "<td>$last_day</td>";
 	echo "<td>$cur_month</td>";

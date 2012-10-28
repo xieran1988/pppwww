@@ -35,9 +35,11 @@ function from_search() {
 	echo "	placeholder='用户名,身份证号,IP,MAC,地址,小区名称 ...' name=key value='$str_key'/>";
 	online_select($req_online);
 	disable_select($req_disable);
+	/*
 	echo " <select name=org >";
 		dro_list("select * from org", $_POST[org], "name", "Id");
 	echo "</select>";
+	*/
 	echo " <button class='btn btn-primary' type=submit >查找</button>";
 	echo "<input name=\"opt\" type=\"hidden\" value=\"1\" />";
 	echo "</form>";
@@ -82,8 +84,11 @@ function table_user() {
 	if (count($where)) {
 		$sql_select .= " where " . join(" and ", $where);
 	}
-	if (!$_GET[uid])
+	$user_count;
+	if (!$_GET[uid]){
+		$user_count = val_text(str_replace("*","count(*) as number",$sql_select), "number");
 		$sql_select = $sql_select." order by user_pppoe.Id desc limit ".$startCount.",".$perNumber;
+	}
 	#echo $sql_select;
 	$dataset = yjwt_mysql_select($sql_select);
 	echo "<table class=\"table table-condensed\">";
@@ -115,10 +120,12 @@ function table_user() {
 		$user_addr = $row["addr"];
 		$user_phone = $row["phone"];
 		$str_note = $row["note"];
-		
+		$mac= $row["mac"];
+		$server_name= $row["service_name"];
+		$server_ip = $row["service_ip"];
 		if(!$str_note) $str_note = "无备注信息";
 		$id_car = $row["idcar"];
-		$uinfo = "地址:$user_addr<br/>电话:$user_phone<br/>身份证:$id_car<br/>备注:$str_note";
+		$uinfo = "地址:$user_addr<br/>电话:$user_phone<br/>身份证:$id_car<br/>MAC:$mac<br/>sName:$server_name<br/>sIP:$server_ip<br/>备注:$str_note";
 		echo "<td><div style='float:left;' rel=\"popover\" data-content=\"$uinfo\" data-original-title=\"联系方式\">$user_name</div></td>";
 		#echo "<td>".$row["addr"]."</td>";
 		#echo "<td>".$row["phone"]."</td>";
@@ -136,6 +143,7 @@ function table_user() {
 	echo "</table>";
 	if($_REQUEST["page"]) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?opt=$req_opt&key=$str_key&online=$req_online&disable_time=$req_disable&page=".($_REQUEST["page"]-1)."'>上一页</a> | ";
 	if($num == $perNumber) echo "<a href='".$_SERVER["SCRIPT_NAME"]."?opt=$req_opt&key=$str_key&online=$req_online&disable_time=$req_disable&page=".($_REQUEST["page"]+1)."'>下一页</a>";
+	if($user_count) echo " <font color=\"red\">{共$user_count}</font>";
 	if($_GET["uid"]){
 		echo "<p>详细信息<p>";
 		echo "<table class=\"table table-condensed\">";

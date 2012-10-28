@@ -3,7 +3,13 @@
 if ($_GET[t] != 'backupusr')
 	return ;
 
-$backup_root = "backup/usr";
+$backup_root = "$GLOBALS[backup_path]/usr";
+if (!is_dir($backup_root)) {
+	echo "<div class='alert'>";
+	echo "备份目录不存在：请检查磁盘是否正常挂载。";
+	echo "</div>";
+	return ;
+}
 chdir($backup_root);
 $pwd = getcwd();
 
