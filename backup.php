@@ -3,14 +3,25 @@
 if ($_GET[t] != 'backupusr')
 	return ;
 
+function alert($msg) {
+	echo "<div class='alert'>";
+	echo $msg;
+	echo "</div>";
+}
+
+function alert_success($msg) {
+	return "<div fade=1 class='alert alert-success'>$msg</div>";
+}
+
 $backup_root = "$GLOBALS[backup_path]/usr";
 if (!is_dir($backup_root)) {
-	echo "<div class='alert'>";
-	echo "备份目录不存在：请检查磁盘是否正常挂载。";
-	echo "</div>";
+	alert("备份目录不存在：请检查磁盘是否正常挂载。");
 	return ;
 }
-chdir($backup_root);
+if (!chdir($backup_root)) {
+	alert("chdir 失败");
+	return ;
+}
 $pwd = getcwd();
 
 #$sql_fields = "fields enclosed by '\"' terminated by ',' ";
@@ -19,7 +30,10 @@ if ($_GET['do'] == 'b') {
 	$date = date('YmdGis');
 	$root = "$date";
 	umask(0);
-	mkdir($root);
+	if (!mkdir($root)) {
+		alert("mkdir 失败:$root/$pwd");
+		return ;
+	}
 	$fp = fopen("$root/time", "w+");
 	fwrite($fp, date('Y-m-d G:i:s'));
 	fclose($fp);
@@ -27,8 +41,9 @@ if ($_GET['do'] == 'b') {
 	$fp = fopen("$root/note", "w+");
 	fwrite($fp, $note);
 	fclose($fp);
-	$r = yjwt_mysql_do("select * from user_pppoe into outfile '$pwd/$root/file.txt' $sql_fields ;");
-	if ($r == 1) {
+	$r = yjwt_mysql_do("select * from user_pppoe into outfile '$pwd/$root/user_pppoe.txt' $sql_fields ;");
+	$r2 = yjwt_mysql_do("select * from user_info into outfile '$pwd/$root/user_info.txt' $sql_fields ;");
+	if ($r == 1 && $r2 == 1) {
 		$tips = "<div fade=1 class='alert alert-success'>备份成功！</div>";
 	} else {
 		$tips = "<div fade=1 class='alert alert-error'>备份失败！</div>";
@@ -36,9 +51,11 @@ if ($_GET['do'] == 'b') {
 }
 
 if ($_GET['do'] == 'r') {
-	$r = yjwt_mysql_do("delete from user_pppoe;");
-	$r = yjwt_mysql_do("LOAD DATA LOCAL INFILE '$pwd/$_GET[path]/file.txt' into table user_pppoe $sql_fields ;");
-	if ($r == 1) {
+	yjwt_mysql_do("delete from user_pppoe;");
+	$r = yjwt_mysql_do("LOAD DATA LOCAL INFILE '$pwd/$_GET[path]/user_pppoe.txt' into table user_pppoe $sql_fields ;");
+	yjwt_mysql_do("delete from user_info;");
+	$r2 = yjwt_mysql_do("LOAD DATA LOCAL INFILE '$pwd/$_GET[path]/user_info.txt' into table user_info $sql_fields ;");
+	if ($r == 1 && $r2 == 1) {
 		$tips = "<div fade=1 class='alert alert-success'>恢复成功！</div>";
 	} else {
 		$tips = "<div fade=1 class='alert alert-error'>恢复失败！</div>";
@@ -65,7 +82,7 @@ if ($_POST['do'] == 'i') {
 
 echo "<form class='form search' method=post >";
 echo "<input name=note type=text class='input' placeholder='请填写备注'></input> ";
-echo "<a href='?do=b' class='btn btn-primary'>备份</a> ";
+echo "<a post='do=b' class='btn btn-primary'>备份</a> ";
 echo "<a upload-post='i' class='btn btn-danger'>导入</a>";
 echo "</form>";
 echo "$tips";

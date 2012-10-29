@@ -32,6 +32,12 @@ $(document).ready(function() {
 			$(this).attr('href', h);
 		}
 	});
+	$('a[post]').click(function() {
+		var url = $(this).attr('post');
+		var form = $(this).closest('form');
+		form.attr('action', '?' + m + '&' + url);
+		form.submit();
+	});
 	$('a[upload-post]').click(function() {
 		var url = $(this).attr('upload-post');
 		var file = $('<input type=file name=file> </input>').change(function() {
