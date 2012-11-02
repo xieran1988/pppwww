@@ -62,6 +62,7 @@
 		    <div class="container-fluid">
           <a class="brand" href="#">小区宽带 OA 系统</a>
 						<ul class="nav pull-right">
+							<li><a href="help.php" target=_blank>帮助手册</a></li>
 						<? if ($_GET[t] != 'login') { ?>
 							<li><a href=?t=exit>退出登陆</a></li>
 						<? } ?>
