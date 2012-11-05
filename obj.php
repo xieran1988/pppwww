@@ -277,7 +277,7 @@ function uid_entry(){
 	if($admin == NULL || $admin == "") $admin = "1";
 	
 	$set_opt;
-	if($_REQUEST["tc"] && $_REQUEST["tc"] >= 0){
+	if($_REQUEST["tc"] && $_REQUEST["tc"] != 'man') {
 		$sql_select="select * from tariff where Id =".$_REQUEST["tc"];
 		$dataset = yjwt_mysql_select($sql_select);
 		if($row = mysql_fetch_array($dataset)){
@@ -303,27 +303,30 @@ function uid_entry(){
 		}
 	}
 	
-	if($money == "" || $money == "0") 
+	if($money == "" || $money == "0")
 		$opt_type = "3";
+
 	$old_t = val_text("select * from user_pppoe where Id=".$uid,"disable_time");
 
 	$sql_update = "update user_pppoe set disable_time=now() where disable_time<now() and Id=$uid";
 	yjwt_mysql_do($sql_update);//修正到期时间
 
-	$disable_time = "DATE_ADD(`disable_time`, Interval $opt_months month)";
-	$sql_update = "update user_pppoe set $set_opt `disable_time`='$disable_time' where Id=$uid";
-	yjwt_mysql_do($sql_update);
-
-	if ($_GET[disable_time]) {
-		$disable_time = "$_GET[disable_time]";
-		$sql_update="update user_pppoe set $set_opt `disable_time`='$disable_time' where Id=$uid";
+	if ($_GET[tc] != 'man') {
+		$disable_time = "DATE_ADD(`disable_time`, Interval $opt_months month)";
+		$sql_update = "update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
 		yjwt_mysql_do($sql_update);
-	}
+		if ($_GET["days"]) {
+			$disable_time = "DATE_ADD(`disable_time`, Interval $opt_days day)";
+			$sql_update="update user_pppoe set $set_opt `disable_time`=$disable_time where Id=$uid";
+			yjwt_mysql_do($sql_update);
+		}
 
-	if($_GET["days"]) {
-		$disable_time = "DATE_ADD(`disable_time`, Interval $opt_days day)";
-		$sql_update="update user_pppoe set $set_opt `disable_time`='$disable_time' where Id=$uid";
-		yjwt_mysql_do($sql_update);
+	} else {
+		if ($_GET[disable_time]) {
+			$disable_time = "$_GET[disable_time]";
+			$sql_update="update user_pppoe set $set_opt, `disable_time`='$disable_time' where Id=$uid";
+			yjwt_mysql_do($sql_update);
+		}
 	}
 
 	$set_opt = "name='".$_GET["name"]."'";
@@ -346,7 +349,7 @@ function uid_entry(){
 	$sql_update = $sql_update.",`uid`";
 	$sql_update = $sql_update.") VALUES('".date("Y-m-d H:i:s",time())."'";
 	$sql_update = $sql_update.",'".$old_t."'";
-	$new_t = val_text("select * from user_pppoe where Id=".$uid,"disable_time");
+	$new_t = val_text("select * from user_pppoe where Id=".$uid, "disable_time");
 	$sql_update = $sql_update.",'".$new_t."'";
 	$sql_update = $sql_update.",'$opt_months'";
 	$sql_update = $sql_update.",'$opt_days'";
@@ -358,7 +361,7 @@ function uid_entry(){
 	$sql_update = $sql_update.",'".$_GET["note"]."'";
 	$sql_update = $sql_update.",'$money'";
 	$sql_update = $sql_update.",'".$uid."')";
-	echo $sql_update;
+	#echo $sql_update;
 	yjwt_mysql_do($sql_update);
 	echo "<div class='alert alert-success'>业务办理成功！</div>";
 	//echo  $sql_update;
