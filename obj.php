@@ -264,7 +264,7 @@ function uid_entry_form() {
 
 function uid_entry(){
   $uid = $_REQUEST["uid"];
-	$admin = $_REQUEST["php_user"];
+	$admin = $_COOKIE["Id_user"];
 	$opt_type = $_REQUEST["opt_type"];//1==开户，2=续费, 3=变更
 	$opt_months = $_REQUEST["months"];
 	$opt_days = $_REQUEST["days"];
@@ -274,7 +274,6 @@ function uid_entry(){
 	if($money == NULL || $money == "") $money = "0";
 	if($opt_months == NULL || $opt_months=="") $opt_months = "0";
 	if($opt_days == NULL || $opt_days=="") $opt_days = "0";
-	if($admin == NULL || $admin == "") $admin = "1";
 	
 	$set_opt;
 	if($_REQUEST["tc"] && $_REQUEST["tc"] != 'man') {
@@ -348,7 +347,7 @@ function uid_entry(){
 	$sql_update = $sql_update.",`note`";
 	$sql_update = $sql_update.",`money`";
 	$sql_update = $sql_update.",`uid`";
-	$sql_update = $sql_update.") VALUES('".date("Y-m-d H:i:s",time())."'";
+	$sql_update = $sql_update.") VALUES('".date("Y-m-d H:i:s")."'";
 	$sql_update = $sql_update.",'".$old_t."'";
 	$new_t = val_text("select * from user_pppoe where Id=".$uid, "disable_time");
 	$sql_update = $sql_update.",'".$new_t."'";

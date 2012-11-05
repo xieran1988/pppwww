@@ -81,6 +81,10 @@ function yjwt_mysql_select($sql_comm){
 	else return 0;
 	
 	$result = mysql_query($sql_comm);
+	if(!$result) {
+		echo "<br>main sql error:".mysql_error()."<br/>";
+		echo "query:$sql_comm<br/>";
+	}
 	__yjwt_mysql_close();
 	return $result;
 }
