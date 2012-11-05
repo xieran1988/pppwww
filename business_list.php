@@ -44,16 +44,22 @@
    	  }
    	  //$_SERVER["REQUEST_URI"]
 			//echo "<a href='".$_SERVER["SCRIPT_NAME"]."'>返回</a>";
-      $sql_select = "select user_info.name,user_info.addr,org.name as oname,speed.name as sname, bill.* ";
-      $sql_select=$sql_select."from bill, user_info, org,speed ";
-      $sql_select=$sql_select."where bill.uid=user_info.uid and bill.orgid = org.Id and bill.speed_id = speed.Id";
+			//
+#      $sql_select = "select user_info.name, user_info.addr, org.name as oname, speed.name as sname, bill.* ";
+#      $sql_select=$sql_select."from bill, user_info, org,speed ";
+#      $sql_select=$sql_select."where bill.uid=user_info.uid and bill.orgid = org.Id and bill.speed_id = speed.Id";
+      $sql_select = "select user_info.name, user_info.addr, org.name as oname, bill.* ";
+      $sql_select=$sql_select."from bill, user_info, org ";
+      $sql_select=$sql_select."where bill.uid=user_info.uid and bill.orgid = org.Id ";
       if($opt_type != "-1") $sql_select=$sql_select." and opt_type = $opt_type";
       $sql_select = $sql_select." and opt_time>='".$_GET["s"]."' and opt_time<='".$_GET["e"]."'";
       if($str_key) $sql_select = $sql_select." and (user_info.uid='$str_key' or org.name='$str_key' or user_info.name='$str_key' or user_info.addr like '%$str_key%')";
       //echo $sql_select;order by
-      echo $sql_select;
 	  $sql_select = $sql_select." order by opt_time desc";
 	  $sql_select = $sql_select." limit ".$startCount.",".$perNumber;
+
+#      echo $sql_select;
+
       $dataset = yjwt_mysql_select($sql_select);
       
       echo "<table class=\"table table-condensed\">";

@@ -41,6 +41,7 @@ function val_text($sql_select, $text_name){
 	if(!$row) return "NULL";
 	return $row[$text_name];
 }
+
 function have_row($sql_select){
 	$dataset = yjwt_mysql_select($sql_select);
 	if(!$dataset) return 0;
@@ -80,7 +81,7 @@ function staff_name($v){
 }
 
 function login_check(){
-	if($_COOKIE["Id_user"]==NULL && $_GET['t'] != 'login'){
+	if ($_COOKIE["Id_user"]==NULL && $_GET['t'] != 'login') {
 	    echo "<script type=\"text/javascript\">";
 		echo "alert('你还没有登陆');";
 		echo "location.href ='?t=login';";
@@ -101,6 +102,7 @@ function rule_ok($ru) {
 
 function rule_check() {
 	$arr = array('manorg', 'manstaff', 'manprice', 'manband');
+	return 1;
 	if (in_array($_GET[t], $arr) && !rule_ok(2)) {
 		echo "<div class=\"alert alert-error\">";
 		echo "警告：非工作人员请勿进入!";
@@ -207,15 +209,20 @@ function online_disable($r, $online, $dis){
 	}
 	return $r;
 }
-$style_id1="style='background-color:White;border-color:#E7E7FF;border-width:1px;border-style:None;font-size:12px;border-collapse:collapse;'";
+
+#$style_id1="style='background-color:White;border-color:#E7E7FF;border-width:1px;border-style:None;font-size:12px;border-collapse:collapse;'";
 $style_id2="style='color:#F7F7F7; background-color:#4A3C8C;'";
-$style_id3="style='color:#4A3C8C; background-color:#F7F7F7;'";
+#$style_id3="style='color:#4A3C8C; background-color:#F7F7F7;'";
 $style_id4="style='color:#4A3C8C; background-color:#E7E7FF;'";
 
+$style_id1="style='background-color:White'";
+$style_id3="style='background-color:#F7F7F7;'";
 
-function bill_statistics_top($s1,$s2){
-	echo "<table width='100%' cellspacing=0 cellpadding=3 border=1 $s1>";
-	echo "<tr $s2>";
+function bill_statistics_top($s1, $s2) {
+#	echo "<table width='100%' cellspacing=0 cellpadding=3 border=1 $s1>";
+#	echo "<tr $s2>";
+	echo "<table class=table>";
+	echo "<tr>";
 	
 	echo "<td>项</td>";
 	echo "<td>名称</td>";
@@ -232,22 +239,27 @@ function bill_statistics_top($s1,$s2){
 	
 	echo "</tr>";
 }
-function bill_stati($s, $e, $orgid, $opt_type){
+
+function bill_stati($s, $e, $orgid, $opt_type) {
 	$s = "select sum(money) as number from bill where opt_time>='$s' and opt_time<'$e'";
 	if($orgid != -1) $s=$s." and (orgid=$orgid or orgmap like '.$orgid.')";
-	if($bill_type != "") $s=$s." and opt_type=$opt_type";
+	if($opt_type != "") $s=$s." and opt_type=$opt_type";
 	
 	//echo $s."<br/>";
 	$v = val_text($s, "number");
 	if(!$v) return "NULL";
 	else return $v;
 	//return val_text($s, "number");
-}	
+}
+
 function bill_statistics($name, $orgid, $style){
 	echo "<tr $style>";
-	$orgname;
-	if($orgid == -1) $orgname ="";
-	else val_text("select * from org where Id =$orgid ", "name");
+#	echo "<tr >";
+
+	if ($orgid == -1) 
+		$orgname ="";
+	else 
+		$orgname = val_text("select * from org where Id = $orgid ", "name");
 	
 	$d=strtotime('-1 days');
 	$cur_day=bill_stati(date("Y-m-d"), date("Y-m-d H:i:s"), $orgid, "");
@@ -266,10 +278,11 @@ function bill_statistics($name, $orgid, $style){
 	
 	
 	$growth = $cur_month - $_last_month;
-	$flag;//Reduction
-	if($growth > 0) $flag = "<font color=\"red\">growth</font>";
-	else if($growth == 0) $flag = "<font color=\"black\">Equal</font>";
-	else $flag = "<font color=\"blue\">Reduction</font>";
+	$precent = sprintf("%.2f%%", abs($growth) * 100. / $_last_month);
+	$flag;//Reductin
+	if($growth > 0) $flag = "<i class=icon-arrow-up></i><font color=\"red\">增长 $precent</font>";
+	else if($growth == 0) $flag = "<font color=\"black\">持平</font>";
+	else $flag = "<font color=\"blue\">下降 $precent</font>";
 	
 	echo "<td>$name</td>";
 	echo "<td>$orgname</td>";
@@ -285,8 +298,8 @@ function bill_statistics($name, $orgid, $style){
 	echo "<td>$last_month_old</td>";
 	
 	echo "</tr>";
-	
 }
+
 function bill_statistics_bottom(){
 	echo "</table>";
 }

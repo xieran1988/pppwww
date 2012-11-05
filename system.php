@@ -4,7 +4,7 @@ require_once("obj.php");
 //if(login_check()==0) return;
 //if(rule_check(2) == 0) return ;
 function user_password_form(){
-				echo "<form method=\"post\" action=\"".$_SERVER["SCRIPT_NAME"]."\">";
+				echo "<form method=\"post\" >";
 				echo "<table>";
 				echo "<tr>";
 				echo "<td>UID:</td><td>".$_REQUEST["Id_user"]."</td>";
@@ -88,7 +88,7 @@ if($_REQUEST["opt"] && $_REQUEST["opt"]=="7") {
 //操作 添加
 if($_GET["opt"] && ($_GET["opt"] == "1" || $_GET["opt"] == "10") && $_GET["id"]){
 				//
-				echo "<form class=\"form-horizontal\" id=\"form1\" method=\"get\" action=\"system.php\">";
+				echo "<form class=\"form-horizontal\" id=\"form1\" method=\"get\" >";
 				echo "<table >";
 				if($_GET["id"] == "1"){
 								$staff_name;

@@ -2,6 +2,9 @@
 
 <?php require_once("/etc/cfg.php") ?>
 <?php require_once("fun.php") ?>
+<?php
+# version=0.9.0
+?>
 
 <html lang="en">
   <head>
@@ -113,6 +116,8 @@
 							<li><a href=?t=manorg>项目管理</a></li>
 							<li class=nav-header>数据导入导出</li>
 							<li><a href=?t=backupusr>用户数据</a></li>
+							<li class=nav-header>统计</li>
+							<li><a href=?t=stati>表格统计</a></li>
 							<li class=nav-header>网监</li>
 							<li><a href=?t=netmon>网监</a></li>
             </ul>
@@ -128,6 +133,7 @@
 					<?php require_once("org.php") ?>
 					<?php require_once("user_info.php") ?>
 					<?php require_once("netmon.php") ?>
+					<?php require_once("stati.php") ?>
 					<? } ?>
         </div><!--/span-->
 
