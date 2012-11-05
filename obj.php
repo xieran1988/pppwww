@@ -292,16 +292,17 @@ function uid_entry(){
 		$set_opt = "password='".$_GET["password"]."'";
 		$sql_select="select * from speed where Id =".$_GET["speed_id"];
 		$dataset = yjwt_mysql_select($sql_select);
-		if($row = mysql_fetch_array($dataset)){
+		if($row = mysql_fetch_array($dataset)) {
 			$set_opt = $set_opt.", `up_speed`=".$row["up_speed"];
 			$set_opt = $set_opt.", `down_speed`=".$row["down_speed"];
 			$set_opt = $set_opt.", `lan_speed`=".$row["lan_speed_rx"];
 			$set_opt = $set_opt.", `speed_id`=".$_GET["speed_id"];
 			if($__REQUEST["ip"]) $set_opt = $set_opt.", `ip_address`='".$__REQUEST["ip"]."'";
 			$opt_type = "3";
-			$set_opt = $set_opt.",";
 		}
 	}
+	if ($set_opt != '')
+		$set_opt = $set_opt . ",";
 	
 	if($money == "" || $money == "0")
 		$opt_type = "3";
@@ -324,7 +325,7 @@ function uid_entry(){
 	} else {
 		if ($_GET[disable_time]) {
 			$disable_time = "$_GET[disable_time]";
-			$sql_update="update user_pppoe set $set_opt, `disable_time`='$disable_time' where Id=$uid";
+			$sql_update="update user_pppoe set $set_opt `disable_time`='$disable_time' where Id=$uid";
 			yjwt_mysql_do($sql_update);
 		}
 	}
